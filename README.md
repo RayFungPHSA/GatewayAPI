@@ -138,10 +138,62 @@ C:\caddy-gateway\secrets\cohesity-gateway-acl.json
 
 ```powershell
 .\Get-GatewayUsage.ps1            # Caddy access log: requests by IP/path
+.\Get-GatewayUsageDuckDB.ps1      # DuckDB: per-MCP, per-token, daily trends
+.\Update-GatewayUsageSnapshot.ps1 # Refresh the dashboard's DuckDB snapshot now
+.\Refresh-GatewayUsageDashboard.ps1 # Snapshot + restart dashboard immediately
 .\Get-CohesityMcpUsage.ps1        # Cohesity MCP: users, tokens, tools
 .\Get-HPEGreenLakeMcpUsage.ps1    # HPEGreenLake MCP: users, tokens, tools
 .\Get-LansweeperMcpUsage.ps1      # Lansweeper MCP: users, tokens, tools
 .\Get-VsphereMcpUsage.ps1         # vSphere MCP: users, tokens, tools
+```
+
+`Get-GatewayUsageDuckDB.ps1` needs Python 3 and DuckDB
+(`python -m pip install duckdb`). It excludes localhost health checks and
+scanner probes from usage counts, and accepts `-Days`, `-Top`, `-CsvPath`,
+`-AclPath` and `-IncludeHealthChecks`.
+
+Token hashes in the Caddy log are matched against `secrets\cohesity-gateway-acl.json`
+by fingerprint prefix, so the report shows real user names and roles. Hashes
+not in the ACL (test tokens, for example) are shown as `(unmapped)`.
+
+Web dashboard (install once with `python -m pip install streamlit`):
+
+```powershell
+.\Start-GatewayUsageDashboard.ps1
+```
+
+Then open `http://127.0.0.1:8501`. It has date, endpoint and user filters,
+daily MCP charts, and per-user/per-MCP tables. It is bound to loopback only;
+do not expose it publicly without adding authentication. Use `-Port` to change
+the port.
+
+### Hourly DuckDB snapshot
+
+The dashboard reads `analytics\usage.duckdb` so history survives Caddy log
+rotation. Task Scheduler runs `Caddy Gateway Usage Snapshot` at 5 minutes past
+each hour; it merges any new `logs\access*.log` rows into the snapshot and writes
+`analytics\snapshot.log`. The import is incremental and skips event IDs already
+stored, so re-runs are safe.
+
+Check it with:
+
+```powershell
+Get-ScheduledTask -TaskName 'Caddy Gateway Usage Snapshot' | Select-Object TaskName, State
+Get-ScheduledTaskInfo -TaskName 'Caddy Gateway Usage Snapshot' | Select-Object LastRunTime, LastTaskResult, NextRunTime
+Get-Content 'C:\caddy-gateway\analytics\snapshot.log' -Tail 20
+```
+
+The task runs as `SYSTEM` with highest privileges, so it continues when no user
+is logged on. DuckDB is installed in `.pythonlibs\` and added to `PYTHONPATH` by
+the wrapper, because the interactive user's per-user Python packages are not
+visible to SYSTEM.
+
+Prometheus metrics for gateway health are enabled in `Caddyfile` (they have no
+per-path or per-caller labels):
+
+```text
+http://127.0.0.1:9180/metrics    # loopback-only, read-only
+http://localhost:2019/metrics    # admin API
 ```
 
 Logs:

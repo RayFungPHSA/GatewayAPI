@@ -11,6 +11,9 @@ logs/
 *.pid
 *.jsonl
 *.sqlite3
+*.duckdb
+analytics/
+.pythonlibs/
 __pycache__/
 *.py[cod]
 node_modules/

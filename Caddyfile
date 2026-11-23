@@ -3,6 +3,11 @@
 	# HTTP->HTTPS redirect listener, since port 80 is unavailable on this host.
 	auto_https disable_redirects
 
+	# Enable Prometheus metrics. Scrape via the loopback-only /metrics
+	# endpoint defined below (or the admin API at localhost:2019/metrics).
+	# Labels are server/handler/code/method; there is no per-path label.
+	metrics
+
 	# Structured access log. Credential headers are hashed so log files can
 	# correlate callers without ever storing a raw key or gateway token.
 	log gateway_access {
@@ -140,4 +145,12 @@ gateway.localhost:8088, 10.53.19.120:8088 {
 :8081 {
 	log gateway_access
 	import gateway_routes
+}
+
+# --- Read-only Prometheus metrics listener --------------------------------
+# Bound to loopback so the writable admin API (port 2019) does not need to
+# be exposed to a scraper.
+http://127.0.0.1:9180 {
+	bind 127.0.0.1
+	metrics /metrics
 }
