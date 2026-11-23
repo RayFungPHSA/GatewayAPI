@@ -211,6 +211,9 @@ hashed in the Caddy access log.
 
 ## Caddy management
 
+Startup and restart procedure after a computer reboot:
+**[GATEWAY-STARTUP.md](GATEWAY-STARTUP.md)**
+
 ```powershell
 caddy validate --config C:\caddy-gateway\Caddyfile
 caddy reload --config C:\caddy-gateway\Caddyfile
