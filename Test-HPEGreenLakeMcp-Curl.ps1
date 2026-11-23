@@ -28,6 +28,10 @@ if (-not $env:COHESITY_GATEWAY_TOKEN) {
     throw 'Set $env:COHESITY_GATEWAY_TOKEN to your gateway token before running this test.'
 }
 
+$ManifestPath = Join-Path $PSScriptRoot 'hpegreenlake-mcp\src\greenlake-readonly-tools.json'
+$Manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
+$ExpectedToolCount = 6 + @($Manifest.endpoints).Count
+
 function Invoke-CurlJsonRpc {
     param(
         [Parameter(Mandatory)][int]$Id,
@@ -104,7 +108,7 @@ try {
 try {
     $r = Invoke-CurlJsonRpc -Id 2 -Method 'tools/list'
     $count = @($r.Json.result.tools).Count
-    Assert-Test 'MCP tools/list' (($r.Status -eq 200) -and ($count -eq 6)) "(status $($r.Status), $count tools)"
+    Assert-Test 'MCP tools/list' (($r.Status -eq 200) -and ($count -eq $ExpectedToolCount)) "(status $($r.Status), $count tools, expected $ExpectedToolCount)"
 } catch {
     Assert-Test 'MCP tools/list' $false $_.Exception.Message
 }

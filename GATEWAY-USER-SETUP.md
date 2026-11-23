@@ -355,15 +355,19 @@ If a tool is hidden or returns an error saying `admin-only` or `GET only`, that
 is the gateway working correctly. Ask the gateway owner if you need different
 access.
 
-HPEGreenLake currently has no admin-only tools. All six GreenLake tools are
+HPEGreenLake currently has no admin-only tools. All 136 GreenLake tools are
 read-only, so read-only users see and can call all of them:
 
-- `greenlake_connection_status`
-- `greenlake_auth_status`
-- `greenlake_list_storage_systems`
-- `greenlake_capacity_summary`
-- `greenlake_list_ports`
-- `greenlake_port_summary`
+- 6 gateway tools: `greenlake_connection_status`, `greenlake_auth_status`,
+  `greenlake_list_storage_systems`, `greenlake_capacity_summary`,
+  `greenlake_list_ports`, `greenlake_port_summary`
+- 130 generated tools covering every `GET` operation in the official HPE
+  Greenlake For Storage Fleet REST APIs 1.4.0 description. Mutating `POST`,
+  `PUT`, `PATCH`, and `DELETE` operations are not registered.
+
+The authoritative list is
+`C:\caddy-gateway\hpegreenlake-mcp\src\greenlake-readonly-tools.json`. Use
+MCP `tools/list` to see the current names and arguments.
 
 Lansweeper also has no admin-only tools. All five Lansweeper tools are
 read-only, so read-only users see and can call all of them:

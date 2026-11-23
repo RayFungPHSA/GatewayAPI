@@ -32,6 +32,10 @@ if ($AllowUntrustedCertificate) {
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
 }
 
+$ManifestPath = Join-Path $PSScriptRoot 'hpegreenlake-mcp\src\greenlake-readonly-tools.json'
+$Manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
+$ExpectedToolCount = 6 + @($Manifest.endpoints).Count
+
 function Invoke-McpJsonRpc {
     param(
         [Parameter(Mandatory)][int]$Id,
@@ -111,7 +115,7 @@ try {
 try {
     $tools = Invoke-McpJsonRpc -Id 2 -Method 'tools/list'
     $count = @($tools.result.tools).Count
-    Assert-Test 'MCP tools/list' ($count -eq 6) "(returned $count tools)"
+    Assert-Test 'MCP tools/list' ($count -eq $ExpectedToolCount) "(returned $count tools, expected $ExpectedToolCount)"
 } catch {
     Assert-Test 'MCP tools/list' $false $_.Exception.Message
 }

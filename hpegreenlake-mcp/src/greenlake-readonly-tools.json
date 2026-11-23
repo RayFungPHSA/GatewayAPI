@@ -1,0 +1,5165 @@
+{
+  "generatedAt": "2026-11-23T21:26:31.836Z",
+  "source": {
+    "title": "HPE Greenlake For Storage Fleet REST APIs",
+    "version": "1.4.0",
+    "openapi": "3.1.0",
+    "url": "https://developer.greenlake.hpe.com/docs/greenlake/services/storage-fleet/public/openapi/storage-fleet-public-v1alpha1/storage-fleet-api"
+  },
+  "note": "Generated read-only GET operations only. Regenerate from the official OpenAPI description; do not edit by hand.",
+  "endpoints": [
+    {
+      "name": "greenlake_device_type4_systems_list",
+      "tag": "storage-systems",
+      "description": "Get all HPE Alletra Storage MP B10000 storage systems",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter systems by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to sort the response with specified key and order"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_system_get_by_id",
+      "tag": "storage-systems",
+      "description": "Get HPE Alletra Storage MP B10000 object identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{id}",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Serial number of the device-type4 storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_alert_contacts_list",
+      "tag": "system-settings",
+      "description": "Get alert-contact details for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/alert-contacts",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_alert_contacts_get_by_id",
+      "tag": "system-settings",
+      "description": "Get alert-contact details for an HPE Alletra Storage MP B10000 storage system identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/alert-contacts/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique Identifier of the alert contact"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_system_capacity_history_get",
+      "tag": "storage-systems",
+      "description": "Get capacity trend data for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/capacity-history",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_system_capacity_summary_get",
+      "tag": "storage-systems",
+      "description": "Get system capacity for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/capacity-summary",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_certificates_list",
+      "tag": "system-settings",
+      "description": "Get array certificates by HPE Alletra Storage MP B10000",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/certificates",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Certificates by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_certificates_get_by_id",
+      "tag": "system-settings",
+      "description": "Get array certificates by HPE Alletra Storage MP B10000 identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/certificates/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the certificate"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_network_service_cim_get",
+      "tag": "system-settings",
+      "description": "Get CIM Network-Service details for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/cim",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_system_component_performance_statistics_get",
+      "tag": "storage-systems",
+      "description": "Get component performance statistics details for an HPE Alletra Storage MP B10000 storage system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/component-performance-statistics",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_cpu_performance_history_get",
+      "tag": "controllers",
+      "description": "Get CPU performance metrics for nodes on storage system identified by {systemId} for device type 4",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/cpu-performance",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "report-view",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "parameter will be set to report view requested. For api users, set parameter as ApiUser"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "compare-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "compareBy will define top and compare metrics for which query has to be made. Allowed value: `cpu_percentage`"
+        },
+        {
+          "name": "component",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "enum": [
+            "NODECPU"
+          ],
+          "description": "component will give information about resource to be queried for CPU performance"
+        },
+        {
+          "name": "metric-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "metricType for CPU performance metrics"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "filter will define objects to be filtered for CPU performance. Filterable column:\n* `nodeId` - id of the node"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_card_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Cards identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosure-cards",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_connectors_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Connectors",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosure-connectors",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosures_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosures",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_disks_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 disks identified by {cageId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{cageId}/disks",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter Disk by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort Disk by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "cageId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "cage ID"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_disks_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 disk identified by {cageId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{cageId}/disks/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "cageId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "cage ID"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the disk"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_card_ports_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Card Ports identified by {enclosureId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-card-ports",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_card_ports_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Card Port identified by {enclosureId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-card-ports/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure card port"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_cards_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Cards identified by {enclosureId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-cards",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_cards_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Card identified by {enclosureId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-cards/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure card"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_connector_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Connectors identified by {enclosureId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-connectors",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_connectors_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Connector identified by {enclosureId} and {enclosureConnectorId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-connectors/{enclosureConnectorId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "enclosureConnectorId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure connector"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_disks_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Disks identified by {enclosureId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-disks",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_disks_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Disk identified by {enclosureId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-disks/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure disk"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_powers_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Powers identified by {enclosureId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-powers",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_powers_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Power identified by {enclosureId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-powers/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure power"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_sleds_list",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Sleds identified by {enclosureId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-sleds",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter enclosure resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort enclosure resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_sleds_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure Sled identified by {enclosureId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{enclosureId}/enclosure-sleds/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure sled"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosures_get_by_id",
+      "tag": "shelves",
+      "description": "Get details of HPE Alletra Storage MP B10000 Enclosure identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/enclosures/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the enclosure"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_file_service_capacity_summary",
+      "tag": "storage-systems",
+      "description": "Get fileservice capacity on HPE Alletra MP B10000 storage system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/file-capacity-summary",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_fileservice_performance_history_get",
+      "tag": "filesystems",
+      "description": "Get aggregated host level NFS trend data for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/fileservice-performance-history",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_fileservice_performance_statistics_get",
+      "tag": "filesystems",
+      "description": "Get performance statistics for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/fileservice-performance-statistics",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_licenses_get_by_id",
+      "tag": "storage-systems",
+      "description": "Get licenses of the storage system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/licenses",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_mail_settings_get",
+      "tag": "system-settings",
+      "description": "Get the system's mail server settings",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/mail-settings",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migration_source",
+      "tag": "migrations",
+      "description": "Get all migration sources (partners) connected to HPE Alletra Storage MP B10000 system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migration sources by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migration sources by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migration_source_by_uid",
+      "tag": "migrations",
+      "description": "Get details of the migration source (partner) identified by {migPtrId} connected to HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_migration_host_sets",
+      "tag": "migrations",
+      "description": "Get all host sets of migration source identified by {migPtrId} on HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/host-sets",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_migration_hosts",
+      "tag": "migrations",
+      "description": "Get all hosts of migration source identified by {migPtrId} on HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/hosts",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migrations",
+      "tag": "migrations",
+      "description": "Get all migrations of a specific migration source (partner) identified by {migPtrId} connected to HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/migrations",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migration_by_id",
+      "tag": "migrations",
+      "description": "Get details of the migration identified by {id} from a specific migration source (partner) {migPtrId} to HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/migrations/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Migration ID on which the action to be performed."
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migration_source_ports",
+      "tag": "migrations",
+      "description": "Get all ports of migration source (partner) identified by {migPtrId} on HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/ports",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_migration_remote_copy_groups",
+      "tag": "migrations",
+      "description": "Get all remote copy groups of migration source identified by {migPtrId} on HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/remotecopy-groups",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migration_source_vluns",
+      "tag": "migrations",
+      "description": "Get all vluns of migration source (partner) identified by {migPtrId} on HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/vluns",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migration_source_volume_sets",
+      "tag": "migrations",
+      "description": "Get all volume sets of migration source (partner) identified by {migPtrId} on HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/volume-sets",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migration sources by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migration sources by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_migration_source_volumes",
+      "tag": "migrations",
+      "description": "Get all volumes of migration source (partner) identified by {migPtrId} on HPE Alletra Storage MP B10000 system {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migration-partners/{migPtrId}/volumes",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "migPtrId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the HPE Alletra Storage MP B10000 Migration Source."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_migrations_list",
+      "tag": "migrations",
+      "description": "Get all migrations on HPE Alletra Storage MP B10000 system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/migrations",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter migrations by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort migrations by key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_network_settings_get",
+      "tag": "system-settings",
+      "description": "Get network settings details for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/network-settings",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_nodes_list",
+      "tag": "controllers",
+      "description": "Get details of HPE Alletra Storage MP B10000 Nodes",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/nodes",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter nodes resource by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort nodes resource by key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_nodes_get_by_id",
+      "tag": "controllers",
+      "description": "Get details of HPE Alletra Storage MP B10000 Node identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/nodes/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the node"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_node_component_performance_statistics_get",
+      "tag": "controllers",
+      "description": "Get component performance statistics details of HPE Alletra Storage MP B10000 node identified by {nodeId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/nodes/{nodeId}/component-performance-statistics",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "nodeId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the node"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_node_service_ports_get_by_id",
+      "tag": "system-settings",
+      "description": "Get service ports for nodes of all storage systems of HPE Alletra Storage MP B10000 identified by {systemId} and {nodeId }",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/nodes/{nodeId}/service-ports",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter systems by Key."
+        },
+        {
+          "name": "nodeId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Primary ID of the node"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_system_performance_history_get",
+      "tag": "storage-systems",
+      "description": "Get performance trend data for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/performance-history",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_system_performance_statistics",
+      "tag": "storage-systems",
+      "description": "Get performance statistics for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/performance-statistics",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_physical_drive_performance_history_get",
+      "tag": "shelves",
+      "description": "Get details of performance metrics of physical drives on storage system identified by {systemid}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/physicaldrives-performance",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "report-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "parameter will be set to report type requested. For api users, set parameter as ApiUser"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "compare-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "compareBy will define top and compare metrics for which query has to be made. Allowed values: `readIops, writeIops, totalIops, readThroughput, writeThroughput, totalThroughput, readLatency, writeLatency, totalLatency, readIosize, writeIosize, totalIosize, totalQlen, avgBusy`"
+        },
+        {
+          "name": "group-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "groupBy will define comma separated groupBy parameters. Allowed value: `pdId`. By default, groupBy will be set to `pdId`."
+        },
+        {
+          "name": "metric-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "metricType will define comma separated metrics"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "filter will define objects to be filtered. Filterable columns are: * `pdId` - id of the physical drive"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_ports_list",
+      "tag": "ports",
+      "description": "Get details of HPE Alletra Storage MP B10000 Ports",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/ports",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter ports by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort ports by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_ports_performance_history_get",
+      "tag": "ports",
+      "description": "Get details of performance metrics of host ports on storage system identified by {systemid}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/ports-performance",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "report-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "parameter will be set to report type requested. For api users, set parameter as ApiUser"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "compare-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "compareBy will define top and compare metrics for which query has to be made. Allowed values: `readIops, writeIops, totalIops, readThroughput, writeThroughput, totalThroughput, readLatency, writeLatency, totalLatency, readIosize, writeIosize, totalIosize, totalQlen, avgBusy`"
+        },
+        {
+          "name": "group-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "groupBy will define comma separated groupBy parameters. By default, groupBy will be set to `nsp`. If groupBy is used along with filter query parameter, only following combination are allowed:\n* `filter: port_type eq host` then groupBy should be `port_type`\n* `filter: port_type eq peer` then groupBy should be `port_type`\n* `filter: nsp eq 0:3:1` then groupBy should be `nsp`\n* `filter: port_type eq host and nsp eq 0:3:1` then groupBy should be `port_type, nsp`\n* `filter: port_type eq peer and nsp eq 0:3:1` then groupBy should be `port_type, nsp`"
+        },
+        {
+          "name": "metric-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "metricType will define comma separated metrics"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "filter will define objects to be filtered. Filterable columns are: * `port_type` - type of the port * `nsp` - node, slot and port of the port"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_ports_get_by_id",
+      "tag": "ports",
+      "description": "Get details of HPE Alletra Storage MP B10000 Port identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/ports/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the port"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_quorum_witness",
+      "tag": "system-settings",
+      "description": "Get quorum witness configuration details from HPE Alletra Storage MP B10000 storage system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/quorum-witness",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter witness by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort witness resource by key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_quorum_witness_with_id",
+      "tag": "system-settings",
+      "description": "Get details of quorum witness configured on replication partner identified by {replicationPartnerId} on HPE Alletra Storage MP B10000 storage system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/quorum-witness/{replicationPartnerId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "replicationPartnerId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of device-type4 replication partner"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_remote_copy_links_performance_history_get",
+      "tag": "system-settings",
+      "description": "Get details of performance metrics of remote copy links on storage system identified by {systemid}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/remotecopylinks-performance",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "report-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "parameter will be set to report type requested. For api users, set parameter as ApiUser"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "compare-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "compareBy will define top and compare metrics for which query has to be made. Allowed values: `linkThroughput, linkRoundTripTime, transmittedData`"
+        },
+        {
+          "name": "group-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "groupBy will define comma separated groupBy parameters. Allowed value: `replicationPartnerName, portNsp`"
+        },
+        {
+          "name": "metric-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "metricType will define comma separated metrics"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "filter will define objects to be filtered. Filterable columns are: * `remoteCopyLinkId` - id of the remote copy link * `targetName` - name of the replication partner"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_replication_partners",
+      "tag": "system-settings",
+      "description": "Get details of replication partners on HPE Alletra Storage MP B10000 storage system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/replication-partners",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter replication partners by key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort nodes resource by key."
+        },
+        {
+          "name": "include-indirect-partners",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include indirect partners. Indirect partners are excluded by default. This parameter cannot be used with other query parameters."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_get_replication_partner_with_id",
+      "tag": "system-settings",
+      "description": "Get details of replication partner identified by {replicationPartnerId} on HPE Alletra Storage MP B10000 storage system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/replication-partners/{replicationPartnerId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "replicationPartnerId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of device-type4 replication partner"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_node_service_ports_list",
+      "tag": "system-settings",
+      "description": "Get service ports for nodes of all storage systems of HPE Alletra Storage MP B10000 identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/service-ports",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter systems by Key."
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_network_service_snmp_mgr_list",
+      "tag": "system-settings",
+      "description": "Get SNMP-Manager Network-Service details for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/snmp-mgr",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_network_service_snmp_mgr_get_by_id",
+      "tag": "system-settings",
+      "description": "Get a specific SNMP-Manager Network-Service details for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/snmp-mgr/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the SNMP manager"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_snmp_users_list",
+      "tag": "system-settings",
+      "description": "Get SNMP users",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/snmp-users",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter snmpusers resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort snmpusers resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_snmp_users_get_by_id",
+      "tag": "system-settings",
+      "description": "Get SNMP users identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/snmp-users/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the SNMP manager"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_support_settings_get",
+      "tag": "system-settings",
+      "description": "Get support settings for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/support-settings",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_enclosure_powers_sustainability",
+      "tag": "system-settings",
+      "description": "Get details of sustainability metrics of enclosure and system power supplies in Watts on storage system identified by {systemid}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/sustainability-metrics",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "group-by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "groupBy will define comma separated groupby parameters"
+        },
+        {
+          "name": "metric-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "metricType will define comma separated metrics"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "filter will define objects to be filtered"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switch_ports_list",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch ports",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switch-ports",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter switch resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort switch resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switches_list",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switches",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter switch resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort switch resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switches_get_by_id",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switch_fan_list",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch Fans identified by switch id",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches/{switchId}/switch-fans",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter switch resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort switch resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "switchId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switch_fan_get_by_id",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch Fan identified by switchId and Fan id",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches/{switchId}/switch-fans/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "switchId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch fan"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switch_port_list",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch ports identified by {switchId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches/{switchId}/switch-ports",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter switch resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort switch resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "switchId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switch_port_get_by_id",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch identified by {switchId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches/{switchId}/switch-ports/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "switchId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch fan"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switch_ps_list",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch power supplies identified by {switchId}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches/{switchId}/switch-ps",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter switch resource by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort switch resource by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "switchId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_switch_ps_get_by_id",
+      "tag": "switches",
+      "description": "Get details of HPE Alletra Storage MP B10000 Switch Power Supplies identified by {switchId} and {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/switches/{switchId}/switch-ps/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "switchId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of the switch fan"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_system_settings_list",
+      "tag": "system-settings",
+      "description": "Get the system settings configuration details",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/system-settings",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_telemetry_get",
+      "tag": "system-settings",
+      "description": "Get telemetry status for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/telemetry",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_trusted_certificates_list",
+      "tag": "system-settings",
+      "description": "Get certificates trusted by HPE Alletra Storage MP B10000",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/trust-certificates",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Certificates by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_trusted_certificates_get_by_id",
+      "tag": "system-settings",
+      "description": "Get certificates trusted by HPE Alletra Storage MP B10000 identified by {id}",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/trust-certificates/{id}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the certificate"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_network_service_vasa_get",
+      "tag": "system-settings",
+      "description": "Get VASA Network-Service details for a an HPE Primera or HPE Alletra 9000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/vasa",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_vm_manager_settings_list",
+      "tag": "system-settings",
+      "description": "Get vCenter settings for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/vm-manager-settings",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_vm_manager_settings_get_by_id",
+      "tag": "system-settings",
+      "description": "Get vCenter setting detail for a given vCenter setting of a HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/vm-manager-settings/{vcenterSettingId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "vcenterSettingId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID(vcenterSettingId) of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_vme_manager_settings_list",
+      "tag": "system-settings",
+      "description": "Get vme settings for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/vme-manager-settings",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_vme_manager_settings_get_by_id",
+      "tag": "system-settings",
+      "description": "Get details for a given vme-setting of a HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/vme-manager-settings/{vmeSettingId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "vmeSettingId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID(vmeSettingId) of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4v_vol_get",
+      "tag": "system-settings",
+      "description": "Get vVol details for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/vvol",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort by Key."
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type4_storage_container_get",
+      "tag": "system-settings",
+      "description": "Get Storage Container details for an HPE Alletra Storage MP B10000 storage system",
+      "path": "/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/vvolscs",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort by Key."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_storage_clusters",
+      "tag": "storage-systems",
+      "description": "Get all HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter systems by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to sort systems by Key."
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_storage_cluster_by_id",
+      "tag": "storage-systems",
+      "description": "Get HPE Alletra Storage MP X10000 system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_system_capacity_history_get",
+      "tag": "storage-systems",
+      "description": "Get capacity trend data for a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/capacity-history",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_system_capacity_summary_get",
+      "tag": "storage-systems",
+      "description": "Get capacity summary for a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/capacity-summary",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "systemId of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_custom_certificate_policies",
+      "tag": "certificates",
+      "description": "Get all custom certificate policies of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/custom-certificate-policies",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Certificate by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort Certificate resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_custom_certificate_policies_by_id",
+      "tag": "certificates",
+      "description": "Get Certificate policies of a HPE Alletra Storage MP X10000 system identified by certificatePolicyID",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/custom-certificate-policies/{certificatePolicyId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "certificatePolicyId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID unique to certificate policy created in objectstore"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_custom_certificates",
+      "tag": "certificates",
+      "description": "Get all custom certificates of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/custom-certificates",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Certificate by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort Certificate resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_custom_certificate_by_id",
+      "tag": "certificates",
+      "description": "Get Custom Certificate of a HPE Alletra Storage MP X10000 system identified by certificateID",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/custom-certificates/{certificateId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "certificateId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID unique to certificate created in objectstore"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_enclosures",
+      "tag": "enclosures",
+      "description": "Get all enclosures of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/enclosures",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Enclosures by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort Enclosure resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_enclosure_by_id",
+      "tag": "enclosures",
+      "description": "Get Enclosure of HPE Alletra Storage MP X10000 system identified by enclosureID",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/enclosures/{enclosureId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "enclosureId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Identifier of Enclosure. A 42 digit hexadecimal number."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_jbof_ioms",
+      "tag": "jbofioms",
+      "description": "Get all JBOF IOMs of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/jbofioms",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter JBOF IOMs by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort JBOF IOM resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_jbof_iom_by_id",
+      "tag": "jbofioms",
+      "description": "Get JBOF IOM of a HPE Alletra Storage MP X10000 system identified by jbofIomID",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/jbofioms/{jbofiomId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "jbofiomId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Identifier of JBOF IOM. A 42 digit hexadecimal number."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_storage_cluster_object_notification_client_by_system_id",
+      "tag": "object-notification-clients",
+      "description": "Get all Object Notification Client config for HPE Alletra Storage MP X10000 system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/object-notification-clients",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter systems by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to sort systems by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_storage_cluster_object_notification_client_by_id",
+      "tag": "object-notification-clients",
+      "description": "Get Object Notification Client config for HPE Alletra Storage MP X10000 system identified by {clientId}",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/object-notification-clients/{clientId}",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "clientId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Object Notification Client"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_system_performance_history_get",
+      "tag": "storage-systems",
+      "description": "Get performance trend data for a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/performance-history",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_replication_partners",
+      "tag": "storage-systems",
+      "description": "Get Replication Partners of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/replication-partners",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Replication Partner by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort Replication Partner resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_replication_partner_by_id",
+      "tag": "storage-systems",
+      "description": "Get Replication Partner of a HPE Alletra Storage MP X10000 system identified by replicationPartnerId",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/replication-partners/{replicationPartnerId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "replicationPartnerId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Identifier of Replication Partner."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_storage_cluster_smtp_settings_by_id",
+      "tag": "storage-systems",
+      "description": "Get SMTP settings of HPE Alletra Storage MP X10000 system identified by {systemId}",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/smtp-settings",
+      "parameters": [
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_storage_nodes",
+      "tag": "storage-nodes",
+      "description": "Get all storage nodes of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/storage-nodes",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter StorageNodes by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort StorageNodes resource by Key."
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_storage_node_by_id",
+      "tag": "storage-nodes",
+      "description": "Get StorageNode of a HPE Alletra Storage MP X10000 system identified by storageNodeID",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/storage-nodes/{storageNodeId}",
+      "parameters": [
+        {
+          "name": "storageNodeId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Identifier of StorageNode. A 42 digit hexadecimal number."
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_switches",
+      "tag": "switches",
+      "description": "Get all switches of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/switches",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Switches by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort Switch resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_switch_by_id",
+      "tag": "switches",
+      "description": "Get Switch of a HPE Alletra Storage MP X10000 system identified by switchID",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/switches/{switchId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "switchId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Identifier of Switch. A 42 digit hexadecimal number."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_trust_certificates",
+      "tag": "certificates",
+      "description": "Get all custom certificates of a HPE Alletra Storage MP X10000 system",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/trust-certificates",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Certificate by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort Certificate resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_trust_certificate_by_id",
+      "tag": "certificates",
+      "description": "Get Trust Certificate of a HPE Alletra Storage MP X10000 system identified by certificateID",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/trust-certificates/{certificateId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "certificateId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID unique to certificate created in objectstore"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_trust_stores",
+      "tag": "certificates",
+      "description": "Get all Trust Store of a HPE Alletra Storage MP X10000 system. A Trust Store represents a collection of trusted certificates.",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/trust-stores",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the storage system"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Lucene query to filter Trust Store by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Data query to sort Trust Store resource by Key."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_device_type7_get_trust_store_by_id",
+      "tag": "certificates",
+      "description": "Get Trust Store of a HPE Alletra Storage MP X10000 system identified by ID. A Trust Store represents a collection of trusted certificates.",
+      "path": "/storage-fleet/v1alpha1/devtype7-storage-systems/{systemId}/trust-stores/{TrustStoreId}",
+      "parameters": [
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        },
+        {
+          "name": "systemId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the Storage system"
+        },
+        {
+          "name": "TrustStoreId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID unique to trustStore created in objectstore"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_get_all_policy_table_policies",
+      "tag": "protection-software-update-policies",
+      "description": "Get all protection and software update policies",
+      "path": "/storage-fleet/v1alpha1/policies",
+      "parameters": [
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter policy manager by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to sort policy manager by Key."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_get_policy_templates_by_id",
+      "tag": "protection-policies",
+      "description": "Get protection policy details by {policyId}",
+      "path": "/storage-fleet/v1alpha1/policies/{policyId}",
+      "parameters": [
+        {
+          "name": "policyId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UID of Policy."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_list_custom_reports",
+      "tag": "storage-systems",
+      "description": "Get all reports\n\nNote: For report GET calls, report IDs starting from 100 are reserved for HPE template reports.",
+      "path": "/storage-fleet/v1alpha1/reports",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter systems by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to sort the response with specified key and order"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_get_custom_report_by_id",
+      "tag": "storage-systems",
+      "description": "Get a report by its unique identifier\nNote: For report GET calls, report IDs starting from 100 are reserved for HPE template reports.",
+      "path": "/storage-fleet/v1alpha1/reports/{reportId}",
+      "parameters": [
+        {
+          "name": "reportId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique identifier for the report"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_blueprints_list",
+      "tag": "setup-blueprints",
+      "description": "Returns list of blueprints",
+      "path": "/storage-fleet/v1alpha1/setup-blueprints",
+      "parameters": [
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The number of items to skip before starting to collect the result set. Default is 20."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The numbers of items to return. Default is 0 which means no limit."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "The filter query parameter is used to filter the set of resources returned in the response. \nThe returned set of resources must match the criteria in the filter query parameter.\nA comparision compares a property name to a literal. \nThe comparisons supported are the following:\n- \"eq\" : Is a property equal to value. Valid for number, boolean and string properties.\n- \"gt\" : Is a property greater than a value. Valid for number or string timestamp properties.\n- \"lt\" : Is a property less than a value. Valid for number or string timestamp properties.\n- \"in\" : Is a value in a property (that is an array of strings).\n- GET /storage-fleet/v1alpha1/setup-blueprints?filter=name eq 'blueprint_device1'"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "A list of properties to include in the response."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Instruct the server to sort the resources returned with a collection-level GET. They provide sorting by one or more properties in ascending or descending order. Each item in the “sort” query parameter is a property name optionally followed by a direction indicator. The direction indicator may only be either “asc” (ascending) or “desc” (descending). If no direction indicator is specified, the default order is ascending. The first item in the “sort” query parameter defines the primary sort order, the second defines the secondary sort order, the third defines the tertiary sort order, etc."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_blueprints_get",
+      "tag": "setup-blueprints",
+      "description": "Get a Specific Blueprint",
+      "path": "/storage-fleet/v1alpha1/setup-blueprints/{id}",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "The UUID of the object"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "A list of properties to include in the response."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_devices_list",
+      "tag": "setup-devices",
+      "description": "Returns a list of devices associated with the customer that have yet to be or have just been initialized.\nThis includes devices that are:\n - onboarded\n - uninitialized\n - initializing\n - initialized (Note that such devices will only be shown for a short period of time)\n - initialization_failed",
+      "path": "/storage-fleet/v1alpha1/setup-devices",
+      "parameters": [
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The number of items to skip before starting to collect the result set. Default is 20."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The numbers of items to return. Default is 0 which means no limit."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "The filter query parameter is used to filter the set of resources returned in the response. \nThe returned set of resources must match the criteria in the filter query parameter.\nA comparision compares a property name to a literal. \nThe comparisons supported are the following:\n- \"eq\" : Is a property equal to value. Valid for number, boolean and string properties.\n- \"ne\" : Is a property not equal to value. Valid for number, boolean and string properties.\n- \"gt\" : Is a property greater than a value. Valid for number or string timestamp properties.\n- \"lt\" : Is a property less than a value. Valid for number or string timestamp properties.\n\nProperties that can be filtered are:\n- name\n- blueprintId\n- description\n- model\n- associatedBlueprint.name\n- autoSetup\n- connectionStatus\n- status\n- type\n- createdAt\n- updatedAt\n- generation\n\nExamples are:\n- GET /storage-fleet/v1alpha1/setup-devices?filter=status eq 'ONBOARDED'\n- GET /storage-fleet/v1alpha1/setup-devices?filter=updatedAt lt 2021-04-08T16:51:33Z\n- GET /storage-fleet/v1alpha1/setup-devices?filter=status eq 'ONBOARDED' and createdAt lt 2021-04-08T16:51:33Z\n- GET /storage-fleet/v1alpha1/setup-devices?filter=status ne 'UNINITIALIZED'"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "A list of properties to include in the response."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Instruct the server to sort the resources returned with a collection-level GET. They provide sorting by one or more properties in ascending or descending order.\nEach item in the “sort” query parameter is a property name optionally followed by a direction indicator. The direction indicator may only be either “asc” (ascending) or \n“desc” (descending). If no direction indicator is specified, the default order is ascending.\nThe first item in the “sort” query parameter defines the primary sort order, the second defines the secondary sort order, the third defines the tertiary sort order, etc. \n\nProperties that can be sorted are:\n- name\n- blueprintId\n- id\n- serialNumber\n- name\n- description\n- model\n- type\n- connectionStatus\n- associatedBlueprint.name\n- status\n- autoSetup\n- createdAt\n- updatedAt\n- generation"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_devices_get",
+      "tag": "setup-devices",
+      "description": "Get a specific device",
+      "path": "/storage-fleet/v1alpha1/setup-devices/{id}",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "The UUID of the object"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "A list of properties to include in the response."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_devices_setup_progress_get",
+      "tag": "setup-devices",
+      "description": "Get the specific setup progress for a device",
+      "path": "/storage-fleet/v1alpha1/setup-progress/{id}",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "The UUID of the object"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "A list of properties to include in the response."
+        }
+      ]
+    },
+    {
+      "name": "greenlake_systems_list",
+      "tag": "storage-systems",
+      "description": "Get all storage systems",
+      "path": "/storage-fleet/v1alpha1/storage-systems",
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of items to return at a time"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "The offset of the first item in the collection to return"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "oData query to filter systems by Key."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to sort the response with specified key and order"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_system_get_by_id",
+      "tag": "storage-systems",
+      "description": "Get storage system object identified by {id}",
+      "path": "/storage-fleet/v1alpha1/storage-systems/{id}",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Serial number of the device-type4 storage system"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query to select only the required parameters, separated by . if nested"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_get_device_type",
+      "tag": "storage-systems",
+      "description": "Get all device types",
+      "path": "/storage-fleet/v1alpha1/storage-types",
+      "parameters": []
+    },
+    {
+      "name": "greenlake_system_capacity_history_get",
+      "tag": "storage-systems",
+      "description": "Get Capacity history of systems based on filter criteria",
+      "path": "/storage-fleet/v1alpha1/system-capacity-history-report",
+      "parameters": [
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "filter will define objects to be filtered"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_system_cpu_performance_get",
+      "tag": "storage-systems",
+      "description": "Get CPU performance metrics for multiple systems based on filter criteria",
+      "path": "/storage-fleet/v1alpha1/system-cpu-performance-report",
+      "parameters": [
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "component",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "enum": [
+            "NODECPU"
+          ],
+          "description": "component will give information about resource to be queried for CPU performance"
+        },
+        {
+          "name": "metric-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "metricType for CPU performance metrics"
+        },
+        {
+          "name": "report-view",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "parameter will be set to report view requested. For api users, set parameter as ApiUser"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter query to select specific systems. Filterable columns:\n* `systemId` - id of the storage system (supports 'in' operator for multiple systems)"
+        }
+      ]
+    },
+    {
+      "name": "greenlake_get_systems_performance_history",
+      "tag": "storage-systems",
+      "description": "Get performance history of systems",
+      "path": "/storage-fleet/v1alpha1/system-performance-report",
+      "parameters": [
+        {
+          "name": "range",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "range will define start and end time in which query has to be made."
+        },
+        {
+          "name": "time-interval-min",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "enum": [
+            5,
+            60,
+            1440,
+            10080
+          ],
+          "description": "It defines granularity in minutes."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "filter will define objects to be filtered"
+        },
+        {
+          "name": "metric-type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "metricType will define comma separated metrics"
+        }
+      ]
+    }
+  ]
+}

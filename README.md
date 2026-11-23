@@ -33,7 +33,9 @@ Cohesity MCP setup, DPAPI-protected server-side key, and per-user ACL instructio
 **[COHESITY-MCP.md](COHESITY-MCP.md)**
 
 HPEGreenLake MCP setup. It reuses the same gateway token/ACL and keeps the
-GreenLake credential server-side in a DPAPI-protected record:
+GreenLake credential server-side in a DPAPI-protected record. It exposes all
+130 `GET` operations from the official HPE Storage Fleet API 1.4.0 as read-only
+tools:
 **[HPEGREENLAKE-MCP.md](HPEGREENLAKE-MCP.md)**
 
 Lansweeper Classic MCP setup. It reuses the same gateway token/ACL and keeps the

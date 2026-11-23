@@ -26,7 +26,7 @@
     },
     {
       "name": "hpegreenlake",
-      "description": "HPE GreenLake Fleet read-only MCP tools",
+      "description": "HPE GreenLake Fleet read-only MCP tools (official Storage Fleet GET operations)",
       "protocol": "streamable-http",
       "http_url": "http://10.53.19.120:8081/hpegreenlake/mcp",
       "https_url": "https://10.53.19.120:8088/hpegreenlake/mcp",

@@ -117,19 +117,76 @@ ACL changes take effect on the next request for both bridges.
 
 ### Read-only guardrails
 
-Every current HPEGreenLake tool is read-only:
+HPEGreenLake exposes 136 read-only tools:
 
-- `greenlake_connection_status`
-- `greenlake_auth_status`
-- `greenlake_list_storage_systems`
-- `greenlake_capacity_summary`
-- `greenlake_list_ports`
-- `greenlake_port_summary`
+- 6 gateway tools:
+  - `greenlake_connection_status`
+  - `greenlake_auth_status`
+  - `greenlake_list_storage_systems`
+  - `greenlake_capacity_summary`
+  - `greenlake_list_ports`
+  - `greenlake_port_summary`
+- 130 tools generated from the official **HPE Greenlake For Storage Fleet REST
+  APIs 1.4.0** OpenAPI description. Every documented `GET` operation is
+  registered; `POST`, `PUT`, `PATCH`, and `DELETE` operations are excluded.
 
-Read-only users see and can call all of them. There are no admin-only
-HPEGreenLake tools today. If a future upstream tool is mutating, it remains
-hidden from `tools/list` and denied by `tools/call` until it is added to the
-explicit read-only allowlist in `http_bridge.py`.
+Official API guide:
+
+<https://developer.greenlake.hpe.com/docs/greenlake/services/storage-fleet/public/openapi/storage-fleet-public-v1alpha1/storage-fleet-api>
+
+The generated manifest is the authoritative tool list:
+
+```text
+C:\caddy-gateway\hpegreenlake-mcp\src\greenlake-readonly-tools.json
+```
+
+It can be regenerated from the official OpenAPI JSON with:
+
+```powershell
+node C:\caddy-gateway\hpegreenlake-mcp\scripts\generate-readonly-manifest.mjs <storage-fleet-api.json>
+```
+
+Coverage by official API tag:
+
+| API area | GET tools |
+|---|---:|
+| storage-systems | 25 |
+| system-settings | 31 |
+| shelves | 19 |
+| migrations | 12 |
+| switches | 11 |
+| certificates | 8 |
+| controllers | 4 |
+| setup-devices | 3 |
+| ports | 3 |
+| filesystems | 2 |
+| enclosures | 2 |
+| jbofioms | 2 |
+| object-notification-clients | 2 |
+| storage-nodes | 2 |
+| protection-policies | 1 |
+| protection-software-update-policies | 1 |
+| setup-blueprints | 2 |
+
+Generated names follow the official `operationId` values. For example, the
+performance-statistics endpoint is exposed as:
+
+```text
+greenlake_device_type4_get_system_performance_statistics(
+  systemId,
+  select?
+)
+```
+
+which performs the read-only GET:
+
+```text
+/storage-fleet/v1alpha1/devtype4-storage-systems/{systemId}/performance-statistics
+```
+
+All users see and can call every tool. There are no admin-only HPEGreenLake
+tools. Any unregistered or mutating tool name remains hidden from `tools/list`
+and denied by `tools/call`.
 
 The bridge also enforces `readOnlyHint: true` and `destructiveHint: false` on
 every tool it advertises to read-only users.

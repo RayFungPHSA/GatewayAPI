@@ -111,11 +111,14 @@ _acl_cache: tuple[int, dict[str, tuple[str, str]]] | None = None
 ADMIN_ROLE = "admin"
 READ_ONLY_ROLE = "read-only"
 
-# Every current HPEGreenLake tool is read-only and annotated as such upstream.
-# There are no admin-only HPEGreenLake tools today. If a mutating tool is added
-# upstream it stays hidden/denied until explicitly placed in this allowlist.
+# Every HPEGreenLake tool is read-only and annotated as such upstream. The
+# generated manifest contains every GET operation from the official HPE Storage
+# Fleet OpenAPI description; POST/PUT/PATCH/DELETE operations are never emitted.
+# If a mutating tool is added upstream it stays hidden/denied until explicitly
+# placed in this allowlist.
 ADMIN_ONLY_TOOLS: set[str] = set()
-READ_ONLY_TOOLS = {
+
+CORE_READ_ONLY_TOOLS = {
     "greenlake_connection_status",
     "greenlake_auth_status",
     "greenlake_list_storage_systems",
@@ -123,6 +126,25 @@ READ_ONLY_TOOLS = {
     "greenlake_list_ports",
     "greenlake_port_summary",
 }
+
+TOOLS_MANIFEST = HERE / "src" / "greenlake-readonly-tools.json"
+
+
+def load_manifest_tools() -> set[str]:
+    """Read generated GET-only tool names; fail closed if the manifest is bad."""
+    try:
+        data = json.loads(TOOLS_MANIFEST.read_text(encoding="utf-8-sig"))
+        return {
+            str(entry["name"])
+            for entry in data.get("endpoints", [])
+            if isinstance(entry, dict) and entry.get("name")
+        }
+    except Exception as exc:
+        print(f"Cannot read GreenLake tool manifest {TOOLS_MANIFEST}: {str(exc)[:300]}", file=sys.stderr)
+        return set()
+
+
+READ_ONLY_TOOLS = CORE_READ_ONLY_TOOLS | load_manifest_tools()
 
 
 def sha256_hex(value: str) -> str:
@@ -476,6 +498,7 @@ async def health(_request: Any) -> JSONResponse:
             "mode": "stateless",
             "auth": "gateway_token",
             "credential_store": "dpapi",
+            "tool_count": len(READ_ONLY_TOOLS),
             "acl_users": len(load_acl()),
             "acl_file": str(ACL_PATH),
         }

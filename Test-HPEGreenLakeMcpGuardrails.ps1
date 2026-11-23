@@ -30,6 +30,8 @@ if ($AllowUntrustedCertificate) {
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
 }
 
+$ManifestPath = Join-Path $PSScriptRoot 'hpegreenlake-mcp\src\greenlake-readonly-tools.json'
+$Manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
 $ExpectedTools = @(
     'greenlake_connection_status'
     'greenlake_auth_status'
@@ -37,7 +39,7 @@ $ExpectedTools = @(
     'greenlake_capacity_summary'
     'greenlake_list_ports'
     'greenlake_port_summary'
-)
+) + @($Manifest.endpoints | ForEach-Object { $_.name })
 
 function Invoke-Mcp {
     param(
