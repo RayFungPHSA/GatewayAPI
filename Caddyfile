@@ -1,0 +1,143 @@
+{
+	# Keep certificate automation (needed for the local-CA cert) but skip the
+	# HTTP->HTTPS redirect listener, since port 80 is unavailable on this host.
+	auto_https disable_redirects
+
+	# Structured access log. Credential headers are hashed so log files can
+	# correlate callers without ever storing a raw key or gateway token.
+	log gateway_access {
+		include http.log.access.gateway_access http.log.error.gateway_access
+		output file C:\caddy-gateway\logs\access.log {
+			roll_size 10mb
+			roll_keep 10
+			roll_keep_for 720h
+		}
+		format filter {
+			# Caddy canonicalizes header names to Title-Case. Upstream key
+			# headers are rejected by the bridges, but are hashed here too in
+			# case a legacy client sends one.
+			request>headers>X-Cohesity-Api-Key hash
+			request>headers>X-Helios-Api-Key hash
+			request>headers>X-Greenlake-Api-Key hash
+			request>headers>X-Hpe-Api-Key hash
+			request>headers>X-Lansweeper-Api-Key hash
+			request>headers>X-Lansweeper-Key hash
+			request>headers>X-Lansweeper-Username hash
+			request>headers>X-Lansweeper-Password hash
+			request>headers>X-Vsphere-Api-Key hash
+			request>headers>X-Vsphere-Username hash
+			request>headers>X-Vsphere-Password hash
+			request>headers>X-Vcenter-Api-Key hash
+			request>headers>X-Vcenter-Username hash
+			request>headers>X-Vcenter-Password hash
+			request>headers>X-Api-Key hash
+			request>headers>X-Gateway-Token hash
+			wrap json
+		}
+	}
+}
+
+# Minimal Caddy API gateway - both HTTPS and plain HTTP
+#
+#   HTTPS: https://gateway.localhost:8088  /  https://10.53.19.120:8088
+#   HTTP:  http://10.53.19.120:8081
+#
+# Routes: /todos/*, /httpbin/*, /vsmonitoring/*, /cohesity/*, /hpegreenlake/*,
+#         /lansweeper/*, /vsphere/*, /mcp/servers (MCP catalog for setup/discovery)
+#
+# The HTTPS listener uses Caddy's local CA (root cert trusted on this machine).
+# Remote machines can install caddy-local-root.crt, or simply use the HTTP port.
+
+# Shared route definitions, imported by both listeners
+(gateway_routes) {
+	# JSONPlaceholder: /todos/1 -> https://jsonplaceholder.typicode.com/todos/1
+	# The upstream API already lives under /todos, so the prefix is kept.
+	handle /todos/* {
+		reverse_proxy https://jsonplaceholder.typicode.com
+	}
+
+	# httpbin: /httpbin/get -> https://httpbin.org/get
+	# /httpbin is a gateway-only prefix and is stripped before proxying.
+	handle /httpbin/* {
+		uri strip_prefix /httpbin
+		reverse_proxy https://httpbin.org {
+			# Re-add the prefix to relative redirects so -L stays in the gateway.
+			header_down Location ^/ /httpbin/
+		}
+	}
+
+	# VS Monitoring health API
+	#   /vsmonitoring/api/health -> https://vsmonitoring.healthbc.org/api/health
+	handle /vsmonitoring/* {
+		uri strip_prefix /vsmonitoring
+		reverse_proxy https://vsmonitoring.healthbc.org {
+			# Keep relative redirects (e.g. /login) inside the gateway.
+			header_down Location ^/ /vsmonitoring/
+		}
+	}
+
+	# MCP catalog. Clients read this once to learn every MCP endpoint on the
+	# gateway, so the setup prompt does not need to be edited for each new MCP.
+	handle /mcp/servers {
+		root * C:\caddy-gateway
+		rewrite * /mcp-servers.json
+		file_server
+	}
+
+	# Cohesity MCP server (HTTP bridge on localhost:8400).
+	# Clients authenticate with X-Gateway-Token; the Cohesity key is server-side.
+	#   /cohesity/mcp    -> 127.0.0.1:8400/mcp
+	#   /cohesity/health -> 127.0.0.1:8400/health
+	handle /cohesity/* {
+		uri strip_prefix /cohesity
+		reverse_proxy 127.0.0.1:8400
+	}
+
+	# HPEGreenLake MCP server (HTTP bridge on localhost:8401).
+	# Uses the same X-Gateway-Token ACL/roles as Cohesity; the GreenLake OAuth
+	# client credential stays on the server.
+	#   /hpegreenlake/mcp    -> 127.0.0.1:8401/mcp
+	#   /hpegreenlake/health -> 127.0.0.1:8401/health
+	handle /hpegreenlake/* {
+		uri strip_prefix /hpegreenlake
+		reverse_proxy 127.0.0.1:8401
+	}
+
+	# Lansweeper Classic MCP server (HTTP bridge on localhost:8402).
+	# Uses the same X-Gateway-Token ACL/roles as the other MCP servers; the
+	# Windows/AD credential stays on the server.
+	#   /lansweeper/mcp    -> 127.0.0.1:8402/mcp
+	#   /lansweeper/health -> 127.0.0.1:8402/health
+	handle /lansweeper/* {
+		uri strip_prefix /lansweeper
+		reverse_proxy 127.0.0.1:8402
+	}
+
+	# VMware vSphere/vCenter MCP server (HTTP bridge on localhost:8403).
+	# Uses the same X-Gateway-Token ACL/roles as the other MCP servers; the
+	# domain credential is held in DPAPI-protected files on the server only.
+	#   /vsphere/mcp    -> 127.0.0.1:8403/mcp
+	#   /vsphere/health -> 127.0.0.1:8403/health
+	handle /vsphere/* {
+		uri strip_prefix /vsphere
+		reverse_proxy 127.0.0.1:8403
+	}
+
+	# Friendly response for anything else
+	handle {
+		respond "Caddy gateway is running. Try /todos/1, /httpbin/get, /mcp/servers, /cohesity/health, /hpegreenlake/health, /lansweeper/health, or /vsphere/health." 200
+	}
+}
+
+# --- HTTPS listener -------------------------------------------------------
+gateway.localhost:8088, 10.53.19.120:8088 {
+	tls internal
+	log gateway_access
+	import gateway_routes
+}
+
+# --- Plain HTTP listener (no certificate needed) --------------------------
+:8081 {
+	log gateway_access
+	import gateway_routes
+}

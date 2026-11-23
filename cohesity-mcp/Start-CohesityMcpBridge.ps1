@@ -1,0 +1,67 @@
+$ErrorActionPreference = 'Stop'
+
+$BridgeDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RootDir = Split-Path -Parent $BridgeDir
+$SecretsDir = Join-Path $RootDir 'secrets'
+$CredentialFile = Join-Path $SecretsDir 'cohesity-gateway.xml'
+$CredentialScript = Join-Path $BridgeDir 'scripts\Get-CohesityGatewayCredential.ps1'
+$AclFile = Join-Path $SecretsDir 'cohesity-gateway-acl.json'
+$Script = Join-Path $BridgeDir 'http_bridge.py'
+$PidFile = Join-Path $BridgeDir 'bridge.pid'
+$LogFile = Join-Path $BridgeDir 'bridge.log'
+$ErrFile = Join-Path $BridgeDir 'bridge.err.log'
+$Port = 8400
+
+if (-not (Test-Path -LiteralPath $CredentialScript)) {
+    throw "Missing protected credential helper: $CredentialScript. Run Set-CohesityGatewayCredential.ps1 first."
+}
+
+if (-not (Test-Path -LiteralPath $CredentialFile)) {
+    throw "Missing protected credential record: $CredentialFile. Run Initialize-CohesitySharedKey.ps1 -Force first."
+}
+
+# Pass only the helper path to Python. The bridge decrypts the DPAPI record
+# itself; no secret value is placed in this process environment.
+$env:COHESITY_CREDENTIAL_SCRIPT = $CredentialScript
+Remove-Item -Path 'Env:COHESITY_API_KEY' -ErrorAction SilentlyContinue
+Remove-Item -Path 'Env:HELIOS_API_KEY' -ErrorAction SilentlyContinue
+
+if (-not (Test-Path -LiteralPath $AclFile)) {
+    Write-Warning "ACL file not found: $AclFile. All MCP requests will be denied until a token is issued."
+}
+
+$existing = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
+if ($existing) {
+    Write-Host "Cohesity MCP bridge is already listening on 127.0.0.1:$Port (PID $($existing[0].OwningProcess))."
+    exit 0
+}
+
+$proc = Start-Process -FilePath 'python' `
+    -ArgumentList @('"' + $Script + '"') `
+    -WorkingDirectory $BridgeDir `
+    -WindowStyle Hidden `
+    -RedirectStandardOutput $LogFile `
+    -RedirectStandardError $ErrFile `
+    -PassThru
+
+Set-Content -LiteralPath $PidFile -Value $proc.Id
+
+$ready = $false
+$health = $null
+for ($i = 0; $i -lt 20; $i++) {
+    Start-Sleep -Milliseconds 500
+    try {
+        $health = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/health" -TimeoutSec 2
+        if ($health.ok) { $ready = $true; break }
+    } catch { }
+}
+
+if (-not $ready) {
+    Write-Error "Bridge did not become ready. Check $LogFile and $ErrFile."
+    exit 1
+}
+
+Write-Host "Cohesity MCP bridge started on http://127.0.0.1:$Port/mcp (PID $($proc.Id))."
+Write-Host "Auth: per-user gateway tokens; ACL users: $($health.acl_users)"
+Write-Host "Logs: $LogFile"
+Write-Host "Errors: $ErrFile"

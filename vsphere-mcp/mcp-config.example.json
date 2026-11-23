@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "vsphere": {
+        "type": "remote",
+        "url": "http://10.53.19.120:8081/vsphere/mcp",
+        "oauth": false,
+        "headers": {
+          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        }
+      }
+    }
+  }
+}

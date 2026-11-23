@@ -1,0 +1,12 @@
+{
+  "name": "cstorage-vsphere-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs && node --check src/vsphere-client.mjs && node --check scripts/dashboard-collect.mjs",
+    "smoke": "node scripts/live-check.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

@@ -1,0 +1,16 @@
+# Secrets and protected credential records
+secrets/
+*.env
+.env
+*.xml
+*.pem
+
+# Runtime state, logs, and caches
+logs/
+*.log
+*.pid
+*.jsonl
+*.sqlite3
+__pycache__/
+*.py[cod]
+node_modules/

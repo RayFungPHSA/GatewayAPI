@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "lansweeper": {
+        "type": "remote",
+        "url": "http://10.53.19.120:8081/lansweeper/mcp",
+        "oauth": false,
+        "headers": {
+          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        }
+      }
+    }
+  }
+}

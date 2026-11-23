@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "gateway": {
+    "name": "Caddy MCP gateway",
+    "host": "10.53.19.120",
+    "http_base": "http://10.53.19.120:8081",
+    "https_base": "https://10.53.19.120:8088",
+    "https_requires_local_ca": true
+  },
+  "auth": {
+    "header": "X-Gateway-Token",
+    "env_var": "COHESITY_GATEWAY_TOKEN",
+    "oauth": false,
+    "note": "The env var name is retained for compatibility. The same token and role are used for every MCP server in this catalog."
+  },
+  "discovery_url": "http://10.53.19.120:8081/mcp/servers",
+  "servers": [
+    {
+      "name": "cohesity",
+      "description": "Cohesity/Helios read and admin MCP tools",
+      "protocol": "streamable-http",
+      "http_url": "http://10.53.19.120:8081/cohesity/mcp",
+      "https_url": "https://10.53.19.120:8088/cohesity/mcp",
+      "health_http_url": "http://10.53.19.120:8081/cohesity/health",
+      "health_https_url": "https://10.53.19.120:8088/cohesity/health"
+    },
+    {
+      "name": "hpegreenlake",
+      "description": "HPE GreenLake Fleet read-only MCP tools",
+      "protocol": "streamable-http",
+      "http_url": "http://10.53.19.120:8081/hpegreenlake/mcp",
+      "https_url": "https://10.53.19.120:8088/hpegreenlake/mcp",
+      "health_http_url": "http://10.53.19.120:8081/hpegreenlake/health",
+      "health_https_url": "https://10.53.19.120:8088/hpegreenlake/health"
+    },
+    {
+      "name": "lansweeper",
+      "description": "Lansweeper Classic on-prem read-only asset/report MCP tools",
+      "protocol": "streamable-http",
+      "http_url": "http://10.53.19.120:8081/lansweeper/mcp",
+      "https_url": "https://10.53.19.120:8088/lansweeper/mcp",
+      "health_http_url": "http://10.53.19.120:8081/lansweeper/health",
+      "health_https_url": "https://10.53.19.120:8088/lansweeper/health"
+    },
+    {
+      "name": "vsphere",
+      "description": "VMware vCenter read-only inventory and monitoring MCP tools",
+      "protocol": "streamable-http",
+      "http_url": "http://10.53.19.120:8081/vsphere/mcp",
+      "https_url": "https://10.53.19.120:8088/vsphere/mcp",
+      "health_http_url": "http://10.53.19.120:8081/vsphere/health",
+      "health_https_url": "https://10.53.19.120:8088/vsphere/health"
+    }
+  ]
+}
