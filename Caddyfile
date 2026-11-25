@@ -35,6 +35,28 @@
 			request>headers>X-Vcenter-Api-Key hash
 			request>headers>X-Vcenter-Username hash
 			request>headers>X-Vcenter-Password hash
+			request>headers>X-3par-Api-Key hash
+			request>headers>X-3par-Username hash
+			request>headers>X-3par-Password hash
+			request>headers>X-Hp3par-Api-Key hash
+			request>headers>X-Hp3par-Username hash
+			request>headers>X-Hp3par-Password hash
+			request>headers>X-Hp3par-Wsapi-Sessionkey hash
+			request>headers>X-Sessionkey hash
+			request>headers>X-Xppa-Username hash
+			request>headers>X-Xppa-Password hash
+			request>headers>X-Xppa-Session hash
+			request>headers>X-Hpexp8-Username hash
+			request>headers>X-Hpexp8-Password hash
+			request>headers>X-Sannav-Username hash
+			request>headers>X-Sannav-Password hash
+			request>headers>X-Sannav-Session hash
+			request>headers>X-Brocade-Username hash
+			request>headers>X-Brocade-Password hash
+			request>headers>Auth hash
+			request>headers>X-Auth hash
+			request>headers>X-Sessionid hash
+			request>headers>X-Session-Id hash
 			request>headers>X-Api-Key hash
 			request>headers>X-Gateway-Token hash
 			wrap json
@@ -48,7 +70,7 @@
 #   HTTP:  http://10.53.19.120:8081
 #
 # Routes: /todos/*, /httpbin/*, /vsmonitoring/*, /cohesity/*, /hpegreenlake/*,
-#         /lansweeper/*, /vsphere/*, /mcp/servers (MCP catalog for setup/discovery)
+#         /lansweeper/*, /vsphere/*, /3parlegacy/*, /hpexp8/*, /brocade/*, /mcp/servers (MCP catalog for setup/discovery)
 #
 # The HTTPS listener uses Caddy's local CA (root cert trusted on this machine).
 # Remote machines can install caddy-local-root.crt, or simply use the HTTP port.
@@ -128,9 +150,41 @@
 		reverse_proxy 127.0.0.1:8403
 	}
 
+	# Legacy HPE 3PAR MCP server (HTTP bridge on localhost:8404).
+	# Scoped to JPN3PAR01 and cw3par02.phsabc.ehcnet.ca. Other arrays are served by HPEGreenLake.
+	# Uses the same X-Gateway-Token ACL/roles as the other MCP servers; the
+	# WSAPI credential is held in a DPAPI-protected file on the server only.
+	#   /3parlegacy/mcp    -> 127.0.0.1:8404/mcp
+	#   /3parlegacy/health -> 127.0.0.1:8404/health
+	handle /3parlegacy/* {
+		uri strip_prefix /3parlegacy
+		reverse_proxy 127.0.0.1:8404
+	}
+
+	# HPE XP Performance Advisor 8.5 MCP server (HTTP bridge on localhost:8405).
+	# Uses the same X-Gateway-Token ACL/roles as the other MCP servers; the XP
+	# credential is held in a DPAPI-protected file on the server only. The
+	# upstream application exposes HTTP port 80 only at /pa.
+	#   /hpexp8/mcp    -> 127.0.0.1:8405/mcp
+	#   /hpexp8/health -> 127.0.0.1:8405/health
+	handle /hpexp8/* {
+		uri strip_prefix /hpexp8
+		reverse_proxy 127.0.0.1:8405
+	}
+
+	# Brocade SANnav read-only MCP server (HTTP bridge on localhost:8406).
+	# Uses the same X-Gateway-Token ACL/roles as the other MCP servers; the
+	# SANnav credential is held in a DPAPI-protected file on the server only.
+	#   /brocade/mcp    -> 127.0.0.1:8406/mcp
+	#   /brocade/health -> 127.0.0.1:8406/health
+	handle /brocade/* {
+		uri strip_prefix /brocade
+		reverse_proxy 127.0.0.1:8406
+	}
+
 	# Friendly response for anything else
 	handle {
-		respond "Caddy gateway is running. Try /todos/1, /httpbin/get, /mcp/servers, /cohesity/health, /hpegreenlake/health, /lansweeper/health, or /vsphere/health." 200
+		respond "Caddy gateway is running. Try /todos/1, /httpbin/get, /mcp/servers, /cohesity/health, /hpegreenlake/health, /lansweeper/health, /vsphere/health, /3parlegacy/health, /hpexp8/health, or /brocade/health." 200
 	}
 }
 

@@ -116,7 +116,7 @@ try {
 try {
     $r = Invoke-CurlJsonRpc -Id 2 -Method 'tools/list'
     $count = @($r.Json.result.tools).Count
-    Assert-Test 'MCP tools/list' (($r.Status -eq 200) -and ($count -eq 9)) "(status $($r.Status), $count tools)"
+    Assert-Test 'MCP tools/list' (($r.Status -eq 200) -and ($count -eq 20)) "(status $($r.Status), $count tools)"
 } catch {
     Assert-Test 'MCP tools/list' $false $_.Exception.Message
 }

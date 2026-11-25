@@ -273,6 +273,95 @@ export class VsphereClient {
     if (!/^[A-Za-z0-9_-]+$/.test(String(id))) throw new Error("Invalid VM identifier.");
     return this.get(`/api/vcenter/vm/${encodeURIComponent(id)}/guest/networking/interfaces`);
   }
+
+  // ---- Additional official read-only inventory operations -----------------
+  // All operations fan out across every configured vCenter and attach the
+  // owning vCenter to each result. No mutating endpoint is used here.
+  async listAllFrom(path, label) {
+    const { results, failures, servers } = await this.acrossServers((client) => client.get(path));
+    const items = results.flatMap(({ server, value }) => {
+      const values = Array.isArray(value) ? value : [value];
+      return values
+        .filter((item) => item !== null && item !== undefined)
+        .map((item) => (item && typeof item === "object" ? { ...item, vCenter: server } : { value: item, vCenter: server }));
+    });
+    if (!items.length && failures.length) {
+      const detail = failures.map(({ server, error }) => `${server}: ${error}`).join("; ");
+      throw new Error(`No ${label} data was returned. Failed vCenters: ${detail}`);
+    }
+    return {
+      items,
+      configuredVCenters: servers.length,
+      onlineVCenters: results.length,
+      failures
+    };
+  }
+
+  async resolveInventory(identifier, listPath, idKey, label) {
+    const raw = String(identifier ?? "").trim();
+    if (!raw) throw new Error(`A ${label} identifier is required.`);
+    const config = await this.ensureConfig();
+    const { results, failures } = await this.acrossServers((client) => client.get(listPath));
+    const hits = [];
+    for (const { server, value } of results) {
+      for (const item of (Array.isArray(value) ? value : [])) {
+        const id = String(item?.[idKey] ?? "");
+        const name = String(item?.name ?? "");
+        if (id === raw || name.toLowerCase() === raw.toLowerCase()) hits.push({ server, item });
+      }
+    }
+    const unique = [...new Map(hits.map((hit) => [`${hit.server}|${hit.item?.[idKey]}`, hit])).values()];
+    if (!unique.length) {
+      const detail = failures.slice(0, 3).map(({ server, error }) => `${server}: ${error}`).join("; ");
+      throw new Error(`No ${label} found for '${raw}' across ${(await this.serverList()).length} configured vCenter(s).${detail ? ` Errors: ${detail}` : ""}`);
+    }
+    const onPrimary = unique.filter((hit) => hit.server === config.server);
+    const candidates = onPrimary.length ? onPrimary : unique;
+    if (candidates.length > 1) {
+      const names = candidates.map((hit) => `${hit.item?.[idKey]} (${hit.server})`).join(", ");
+      throw new Error(`Multiple ${label} entries match '${raw}': ${names}. Use the exact id instead.`);
+    }
+    return { server: candidates[0].server, id: String(candidates[0].item[idKey]), item: candidates[0].item };
+  }
+
+  async inventoryDetail(identifier, listPath, idKey, detailPath, label) {
+    const found = await this.resolveInventory(identifier, listPath, idKey, label);
+    const config = await this.ensureConfig();
+    const client = found.server === config.server ? this : this.clientFor(found.server);
+    const value = await client.get(detailPath(found.id));
+    const payload = value && typeof value === "object" && !Array.isArray(value) ? value : { value };
+    return { ...payload, vCenter: found.server, id: found.id };
+  }
+
+  async vmDetail(identifier, suffix, label) {
+    const { server, vm } = await this.resolveVmId(identifier);
+    const id = String(vm?.vm ?? vm ?? "");
+    if (!/^[A-Za-z0-9_-]+$/.test(id)) throw new Error("Invalid VM identifier.");
+    const config = await this.ensureConfig();
+    const client = server && server !== config.server ? this.clientFor(server) : this;
+    const value = await client.get(`/api/vcenter/vm/${encodeURIComponent(id)}/${suffix}`);
+    const payload = value && typeof value === "object" && !Array.isArray(value) ? value : { value };
+    return { ...payload, vCenter: server ?? config.server, vmId: id, vmName: vm.name, detail: label };
+  }
+
+  listAllResourcePools() { return this.listAllFrom("/api/vcenter/resource-pool", "resource pools"); }
+  getResourcePool(id) {
+    return this.inventoryDetail(id, "/api/vcenter/resource-pool", "resource_pool",
+      (found) => `/api/vcenter/resource-pool/${encodeURIComponent(found)}`, "resource pool");
+  }
+  listAllFolders() { return this.listAllFrom("/api/vcenter/folder", "folders"); }
+  listAllContentLibraries() { return this.listAllFrom("/api/content/library", "content libraries"); }
+  listAllTagCategories() { return this.listAllFrom("/api/cis/tagging/category", "tag categories"); }
+  listAllTags() { return this.listAllFrom("/api/cis/tagging/tag", "tags"); }
+  getVmGuestNetworkInterfaces(vm) { return this.vmDetail(vm, "guest/networking/interfaces", "guest network interfaces"); }
+  getVmGuestIdentity(vm) { return this.vmDetail(vm, "guest/identity", "guest identity"); }
+  getVmEthernet(vm) { return this.vmDetail(vm, "hardware/ethernet", "ethernet adapters"); }
+  getVmStoragePolicy(vm) { return this.vmDetail(vm, "storage/policy", "storage policy"); }
+  getDatastoreDefaultPolicy(datastore) {
+    return this.inventoryDetail(datastore, "/rest/vcenter/datastore", "datastore",
+      (found) => `/api/vcenter/datastore/${encodeURIComponent(found)}/default-policy`, "datastore");
+  }
+
   listHosts() { return this.get("/rest/vcenter/host"); }
   listClusters() { return this.get("/rest/vcenter/cluster"); }
   listDatastores() { return this.get("/rest/vcenter/datastore"); }

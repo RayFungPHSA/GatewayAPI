@@ -139,7 +139,10 @@ hidden from `tools/list` and denied by `tools/call` until it is added to the
 explicit read-only allowlist in `http_bridge.py`.
 
 The bridge also enforces `readOnlyHint: true` and `destructiveHint: false` on
-every tool it advertises to read-only users.
+every tool it advertises to read-only users. Caller-supplied paths in
+`lansweeper_fetch_page` and `lansweeper_discover_endpoints` are restricted to
+the configured console origin, so the authenticated console cookie is never
+sent to another host (including via redirects).
 
 ---
 

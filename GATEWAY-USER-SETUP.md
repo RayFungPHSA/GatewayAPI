@@ -378,7 +378,7 @@ read-only, so read-only users see and can call all of them:
 - `lansweeper_list_assets`
 - `lansweeper_fetch_page`
 
-vSphere also has no admin-only tools. All nine vSphere tools are read-only, so
+vSphere also has no admin-only tools. All 20 vSphere tools are read-only, so
 read-only users see and can call all of them:
 
 - `vsphere_connection_status`
@@ -390,6 +390,17 @@ read-only users see and can call all of them:
 - `vsphere_list_datastores`
 - `vsphere_list_networks`
 - `vsphere_list_datacenters`
+- `vsphere_list_resource_pools`
+- `vsphere_get_resource_pool`
+- `vsphere_list_folders`
+- `vsphere_get_vm_guest_network_interfaces`
+- `vsphere_get_vm_guest_identity`
+- `vsphere_get_vm_ethernet`
+- `vsphere_get_vm_storage_policy`
+- `vsphere_get_datastore_default_policy`
+- `vsphere_list_content_libraries`
+- `vsphere_list_tag_categories`
+- `vsphere_list_tags`
 
 ### Admin
 

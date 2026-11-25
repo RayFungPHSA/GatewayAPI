@@ -103,6 +103,15 @@ try {
 }
 
 try {
+    $bad = @($roTools.result.tools | Where-Object {
+        ([bool]$_.annotations.readOnlyHint -ne $true) -or ([bool]$_.annotations.destructiveHint -ne $false)
+    })
+    Assert-Test 'Read-only tools are annotated read-only' ($bad.Count -eq 0) "(bad: $(@($bad | ForEach-Object { $_.name }) -join ','))"
+} catch {
+    Assert-Test 'Read-only tools are annotated read-only' $false $_.Exception.Message
+}
+
+try {
     $apiTool = @($roTools.result.tools | Where-Object { $_.name -eq 'api_request' })[0]
     $enum = @($apiTool.inputSchema.properties.method.enum)
     Assert-Test 'Read-only api_request schema is GET-only' (($enum.Count -eq 1) -and ($enum[0] -eq 'GET')) "(enum: $($enum -join ','))"

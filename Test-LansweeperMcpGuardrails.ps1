@@ -151,6 +151,16 @@ try {
     Assert-Test 'Client-supplied credential is rejected' ($code -eq 400) "(status $code)"
 }
 
+try {
+    $r = Invoke-Mcp -Token $ReadOnlyToken -Id 6 -Method 'tools/call' -Params @{
+        name = 'lansweeper_fetch_page'; arguments = @{ path = 'https://example.invalid/' }
+    }
+    $text = Get-CallText $r
+    Assert-Test 'Cross-origin authenticated fetch is blocked' ([bool]$r.result.isError -and $text -match 'outside the configured console origin') $text
+} catch {
+    Assert-Test 'Cross-origin authenticated fetch is blocked' $false $_.Exception.Message
+}
+
 Write-Host
 Write-Host ("Result: {0} passed, {1} failed" -f $script:Passed, $script:Failed) -ForegroundColor Cyan
 if ($script:Failed -gt 0) { exit 1 }

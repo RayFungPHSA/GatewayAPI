@@ -759,6 +759,153 @@ async def list_tools() -> list[types.Tool]:
                 "required": ["cluster_id"],
             },
         ),
+        # Additional read-only operations verified against the official Helios
+        # REST API V2 reference and live-tested on this tenant. All are GETs.
+        types.Tool(
+            name="get_data_protect_usage",
+            description="Get Helios data-protect usage statistics (GET /mcm/data-protect/usage-stats).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "from_usecs": {"type": "integer", "description": "Optional start time in microseconds."},
+                    "to_usecs": {"type": "integer", "description": "Optional end time in microseconds."},
+                },
+            },
+        ),
+        types.Tool(
+            name="get_alert_summary",
+            description="Get Helios alert counts grouped by category (GET /mcm/stats/alerts-summary).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_time_usecs": {"type": "integer"},
+                    "end_time_usecs": {"type": "integer"},
+                },
+            },
+        ),
+        types.Tool(
+            name="get_alert_types",
+            description="Get defined alert types (GET /alert-types).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "cluster_id": {"type": "string", "description": "Optional cluster id for an on-prem call."},
+                },
+            },
+        ),
+        types.Tool(
+            name="get_cluster_storage_stats",
+            description="Get cluster storage statistics (GET /stats/cluster-storage).",
+            inputSchema={
+                "type": "object",
+                "properties": {"cluster_id": {"type": "string"}},
+            },
+        ),
+        types.Tool(
+            name="get_protection_group_run",
+            description="Get one protection-group run by group id and run id (GET /data-protect/protection-groups/{id}/runs/{runId}).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "group_id": {"type": "string"},
+                    "run_id": {"type": "string", "description": "Run id in the form 123456:789012."},
+                    "cluster_id": {"type": "string"},
+                },
+                "required": ["group_id", "run_id"],
+            },
+        ),
+        types.Tool(
+            name="get_protection_run_stats",
+            description="Get statistics for one protection run (GET /data-protect/runs/{runId}/stats).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "run_id": {"type": "string"},
+                    "cluster_id": {"type": "string"},
+                },
+                "required": ["run_id"],
+            },
+        ),
+        types.Tool(
+            name="get_object_snapshots",
+            description="List restore-point snapshots for a protected object (GET /data-protect/objects/{id}/snapshots).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "object_id": {"type": "string"},
+                    "from_time_usecs": {"type": "integer"},
+                    "to_time_usecs": {"type": "integer"},
+                    "cluster_id": {"type": "string"},
+                },
+                "required": ["object_id"],
+            },
+        ),
+        types.Tool(
+            name="get_object_runs",
+            description="List protection runs for a protected object (GET /data-protect/objects/{id}/runs).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "object_id": {"type": "string"},
+                    "num_runs": {"type": "integer"},
+                    "cluster_id": {"type": "string"},
+                },
+                "required": ["object_id"],
+            },
+        ),
+        types.Tool(
+            name="list_storage_domains",
+            description="List storage domains (GET /storage-domains).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "cluster_id": {"type": "string"},
+                    "include_stats": {"type": "boolean"},
+                },
+            },
+        ),
+        types.Tool(
+            name="list_file_views",
+            description="List file-services views (GET /file-services/views).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "cluster_id": {"type": "string"},
+                    "max_count": {"type": "integer"},
+                    "summary_only": {"type": "boolean"},
+                },
+            },
+        ),
+        types.Tool(
+            name="list_external_targets",
+            description="List external replication/archival targets (GET /data-protect/external-targets).",
+            inputSchema={
+                "type": "object",
+                "properties": {"cluster_id": {"type": "string"}},
+            },
+        ),
+        types.Tool(
+            name="list_users",
+            description="List Helios users (GET /users).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "usernames": {"type": "array", "items": {"type": "string"}},
+                    "email_addresses": {"type": "array", "items": {"type": "string"}},
+                },
+            },
+        ),
+        types.Tool(
+            name="list_roles",
+            description="List roles (GET /roles).",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "names": {"type": "array", "items": {"type": "string"}},
+                    "cluster_id": {"type": "string"},
+                },
+            },
+        ),
     ]
 
 
@@ -791,7 +938,8 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
         elif name == "list_protection_groups":
             params = {}
             if arguments.get("environment"):
-                params["environment"] = arguments["environment"]
+                # Official Helios V2 uses the plural, array-valued parameter.
+                params["environments"] = [arguments["environment"]]
             cluster_id = arguments.get("cluster_id")
             result = client.request("GET", "/data-protect/protection-groups", params=params, cluster_id=cluster_id)
 
@@ -821,16 +969,19 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
             result = client.request("GET", "/data-protect/policies", cluster_id=cluster_id)
 
         elif name == "list_alerts":
+            # Official GET /mcm/alerts uses list-valued filters and
+            # startDateUsecs/endDateUsecs, not the older singular names.
             params = {}
-            for k in ("start_time_usecs", "end_time_usecs"):
-                if arguments.get(k):
-                    params[k] = arguments[k]
-            if arguments.get("alert_type"):
-                params["alertType"] = arguments["alert_type"]
-            if arguments.get("alert_state"):
-                params["alertState"] = arguments["alert_state"]
-            if arguments.get("severity"):
-                params["severity"] = arguments["severity"]
+            for source, target in (("start_time_usecs", "startDateUsecs"), ("end_time_usecs", "endDateUsecs")):
+                if arguments.get(source):
+                    params[target] = arguments[source]
+            for source, target in (
+                ("alert_type", "alertTypeList"),
+                ("alert_state", "alertStateList"),
+                ("severity", "alertSeverityList"),
+            ):
+                if arguments.get(source):
+                    params[target] = [arguments[source]]
             cluster_id = arguments.get("cluster_id")
             result = client.request("GET", "/mcm/alerts", params=params, cluster_id=cluster_id)
 
@@ -838,13 +989,18 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
             result = client.request("GET", "/mcm/stats/protectionSummary")
 
         elif name == "list_protected_objects":
-            params = {}
-            if arguments.get("environment"):
-                params["environment"] = arguments["environment"]
-            if arguments.get("object_type"):
-                params["objectType"] = arguments["object_type"]
-            cluster_id = arguments.get("cluster_id")
-            result = client.request("GET", "/data-protect/protected-objects", params=params, cluster_id=cluster_id)
+            # Official Helios V2 path is /mcm/data-protect/protected-objects.
+            # The older /data-protect/protected-objects path is not in the
+            # current reference and can return errors on this tenant.
+            raw = client.request("GET", "/mcm/data-protect/protected-objects")
+            objects = json.loads(raw).get("objects", [])
+            environment = arguments.get("environment")
+            object_type = arguments.get("object_type")
+            if environment:
+                objects = [obj for obj in objects if obj.get("environment") == environment]
+            if object_type:
+                objects = [obj for obj in objects if obj.get("objectType") == object_type]
+            result = json.dumps({"objects": objects}, indent=2, default=str)
 
         elif name == "search_objects":
             params = {}
@@ -1017,6 +1173,100 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
 
         elif name == "list_protection_group_usage_dates":
             result = json.dumps(list_protection_group_usage_dates(arguments["cluster_id"]), indent=2)
+
+        elif name == "get_data_protect_usage":
+            params = {}
+            for source, target in (("from_usecs", "fromUsecs"), ("to_usecs", "toUsecs")):
+                if arguments.get(source) is not None:
+                    params[target] = arguments[source]
+            result = client.request("GET", "/mcm/data-protect/usage-stats", params=params)
+
+        elif name == "get_alert_summary":
+            params = {}
+            for source, target in (("start_time_usecs", "startTimeUsecs"), ("end_time_usecs", "endTimeUsecs")):
+                if arguments.get(source) is not None:
+                    params[target] = arguments[source]
+            result = client.request("GET", "/mcm/stats/alerts-summary", params=params)
+
+        elif name == "get_alert_types":
+            result = client.request(
+                "GET", "/alert-types",
+                cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "get_cluster_storage_stats":
+            result = client.request("GET", "/stats/cluster-storage", cluster_id=arguments.get("cluster_id"))
+
+        elif name == "get_protection_group_run":
+            result = client.request(
+                "GET",
+                f"/data-protect/protection-groups/{arguments['group_id']}/runs/{arguments['run_id']}",
+                cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "get_protection_run_stats":
+            result = client.request(
+                "GET", f"/data-protect/runs/{arguments['run_id']}/stats",
+                cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "get_object_snapshots":
+            params = {}
+            for source, target in (("from_time_usecs", "fromTimeUsecs"), ("to_time_usecs", "toTimeUsecs")):
+                if arguments.get(source) is not None:
+                    params[target] = arguments[source]
+            result = client.request(
+                "GET", f"/data-protect/objects/{arguments['object_id']}/snapshots",
+                params=params, cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "get_object_runs":
+            params = {}
+            if arguments.get("num_runs") is not None:
+                params["numRuns"] = arguments["num_runs"]
+            result = client.request(
+                "GET", f"/data-protect/objects/{arguments['object_id']}/runs",
+                params=params, cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "list_storage_domains":
+            params = {}
+            if arguments.get("include_stats") is not None:
+                params["includeStats"] = arguments["include_stats"]
+            result = client.request(
+                "GET", "/storage-domains", params=params,
+                cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "list_file_views":
+            params = {}
+            if arguments.get("max_count") is not None:
+                params["maxCount"] = arguments["max_count"]
+            if arguments.get("summary_only") is not None:
+                params["summaryOnly"] = arguments["summary_only"]
+            result = client.request(
+                "GET", "/file-services/views", params=params,
+                cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "list_external_targets":
+            result = client.request(
+                "GET", "/data-protect/external-targets",
+                cluster_id=arguments.get("cluster_id"),
+            )
+
+        elif name == "list_users":
+            params = {}
+            for source, target in (("usernames", "usernames"), ("email_addresses", "emailAddresses")):
+                if arguments.get(source):
+                    params[target] = arguments[source]
+            result = client.request("GET", "/users", params=params)
+
+        elif name == "list_roles":
+            params = {}
+            if arguments.get("names"):
+                params["names"] = arguments["names"]
+            result = client.request("GET", "/roles", params=params)
 
         elif name == "api_request":
             result = client.request(

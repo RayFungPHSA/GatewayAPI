@@ -18,7 +18,40 @@ Gateway host: `10.53.19.120`
 | `/hpegreenlake/*` | Local HPEGreenLake MCP bridge on `127.0.0.1:8401` |
 | `/lansweeper/*` | Local Lansweeper Classic MCP bridge on `127.0.0.1:8402` |
 | `/vsphere/*` | Local VMware vSphere/vCenter MCP bridge on `127.0.0.1:8403` |
+| `/3parlegacy/*` | Local legacy HPE 3PAR MCP bridge on `127.0.0.1:8404` (`JPN3PAR01`, `cw3par02.phsabc.ehcnet.ca`) |
+| `/hpexp8/*` | Local HPE XP Performance Advisor 8.5 MCP bridge on `127.0.0.1:8405` |
+| `/brocade/*` | Local Brocade SANnav MCP bridge on `127.0.0.1:8406` |
 | `/mcp/servers` | Static MCP catalog used by the setup/discovery prompt |
+
+## Windows service
+
+The gateway is a Windows Service named `CaddyGateway`, configured for Automatic
+(Delayed Start) and running as `PHSABC\Ray.Fung`. It starts at boot without an
+interactive logon, calls `Start-CaddyGateway.ps1`, and re-runs startup if the
+local health check fails. It calls `Stop-CaddyGateway.ps1` when stopped.
+
+One-time installation must be run from an elevated PowerShell prompt:
+
+```powershell
+.\Install-CaddyGatewayService.ps1
+```
+
+It prompts locally for the Ray.Fung Windows password with masked input and lets
+Windows store it for the service. No password is written to a project file. If
+the password changes, re-run the installer. Removal:
+
+```powershell
+.\Uninstall-CaddyGatewayService.ps1
+```
+
+The manual scripts remain available for crash recovery or maintenance:
+
+```powershell
+.\Start-CaddyGateway.ps1
+.\Stop-CaddyGateway.ps1
+```
+
+Logs: `logs\service.log`, `logs\startup.log`, and `logs\shutdown.log`.
 
 ## Tests
 
@@ -45,6 +78,27 @@ Windows/AD credential server-side in a DPAPI-protected record:
 VMware vSphere/vCenter MCP setup. It reuses the same gateway token/ACL and keeps
 the domain credential server-side in DPAPI-protected files:
 **[VSPHERE-MCP.md](VSPHERE-MCP.md)**
+
+Legacy HPE 3PAR WSAPI MCP setup. It covers `JPN3PAR01` and
+`cw3par02.phsabc.ehcnet.ca`, reuses the same gateway token/ACL, and keeps the
+WSAPI credential server-side in a DPAPI-protected file. Each array's reachability
+is reported per-array in tool results:
+**[3PARLEGACY-MCP.md](3PARLEGACY-MCP.md)**
+
+HPE XP Performance Advisor 8.5 MCP setup. It reuses the same gateway token/ACL
+and keeps the XP credential server-side in a DPAPI-protected record. Both base
+URLs are queried by default with per-server attribution; `spapphpxp003` is
+firewall-pending:
+**[HPEXP8-MCP.md](HPEXP8-MCP.md)**
+
+Brocade SANnav read-only MCP setup. It reuses the same gateway token/ACL, and
+the SANnav credential was imported from the old project's plaintext `.env` into
+a DPAPI-protected record. No plaintext file was copied into this gateway:
+**[BROCADE-MCP.md](BROCADE-MCP.md)**
+
+Vendor API coverage review for all seven MCPs, including read-only-user
+enforcement and the official documentation used:
+**[VENDOR-API-COVERAGE.md](VENDOR-API-COVERAGE.md)**
 
 User-facing setup guide to share with remote users:
 **[GATEWAY-USER-SETUP.md](GATEWAY-USER-SETUP.md)**
@@ -73,13 +127,19 @@ MCP tests (after setting `$env:COHESITY_GATEWAY_TOKEN` to your issued token):
 .\Test-VsphereMcp.ps1
 .\Test-VsphereMcp-Curl.ps1
 .\Test-VsphereMcpGuardrails.ps1
+.\Test-3PARLegacyMcp.ps1
+.\Test-3PARLegacyMcpGuardrails.ps1
+.\Test-HPEXP8Mcp.ps1
+.\Test-HPEXP8McpGuardrails.ps1
+.\Test-BrocadeMcp.ps1
+.\Test-BrocadeMcpGuardrails.ps1
 .\Test-GatewayDpapiCredentialStore.ps1  # no token required
 ```
 
 ## Server-side secrets
 
 Upstream credentials are not accepted from clients and are not in the
-Caddyfile. All four MCPs now use the same DPAPI-backed pattern: the bridge calls
+Caddyfile. All seven MCPs now use the same DPAPI-backed pattern: the bridge calls
 a restricted local PowerShell helper, which decrypts a Windows-DPAPI-protected
 `PSCredential` record and emits one JSON line only to the local bridge process.
 
@@ -90,11 +150,19 @@ C:\caddy-gateway\secrets\lansweeper-gateway.xml
 C:\caddy-gateway\secrets\vsphere.xml
 C:\caddy-gateway\secrets\vsphere-server.txt
 C:\caddy-gateway\secrets\vsphere-ca.pem
+C:\caddy-gateway\secrets\3parlegacy.xml
+C:\caddy-gateway\secrets\3parlegacy-servers.json
+C:\caddy-gateway\secrets\hpexp8.xml
+C:\caddy-gateway\secrets\hpexp8-servers.json
+C:\caddy-gateway\secrets\brocade.xml
+C:\caddy-gateway\secrets\brocade-servers.json
 ```
 
 There are no plain-text `*-gateway.env` credential files. `vsphere-server.txt`
-contains only vCenter URLs, and `vsphere-ca.pem` is the public internal CA
-bundle.
+contains only vCenter URLs, `vsphere-ca.pem` is the public internal CA bundle,
+`3parlegacy-servers.json` contains only the two 3PAR array names and URLs, and
+`hpexp8-servers.json` contains only the two XP Performance Advisor base URLs,
+and `brocade-servers.json` contains only the SANnav host and port.
 
 DPAPI is tied to the Windows account that created the record. Setup scripts and
 bridge start scripts must run under the same account. All secret files and the
@@ -108,6 +176,9 @@ Rotate a credential with:
 .\hpegreenlake-mcp\Set-HPEGreenLakeGatewayCredential.ps1
 .\lansweeper-mcp\Set-LansweeperGatewayCredential.ps1
 .\vsphere-mcp\Set-VsphereGatewayCredential.ps1
+.\3parlegacy-mcp\Set-3PARLegacyGatewayCredential.ps1  # prompts for the metrics password
+.\hpexp8-mcp\Set-HPEXP8GatewayCredential.ps1          # imports old DPAPI record; -PromptPassword rotates
+.\brocade-mcp\Set-BrocadeGatewayCredential.ps1        # imports old .env locally; -PromptPassword rotates
 ```
 
 For initial import from the source CStorageDashboard project only:
@@ -165,9 +236,14 @@ Web dashboard (install once with `python -m pip install streamlit`):
 ```
 
 Then open `http://127.0.0.1:8501`. It has date, endpoint and user filters,
-daily MCP charts, and per-user/per-MCP tables. It is bound to loopback only;
-do not expose it publicly without adding authentication. Use `-Port` to change
-the port.
+hourly/daily MCP charts (hourly by default via **Chart granularity**), and
+per-user/per-MCP tables. Times use `America/Vancouver`
+(permanent BC Pacific Time, UTC-07:00); tick **Show UTC instead** in the
+sidebar to switch back to UTC. Daily charts are grouped by local calendar day.
+The IANA database currently labels this offset `MST`; BC calls it `PCT`. Set
+`GATEWAY_DISPLAY_TZ` to override the zone. It is bound to loopback only; do not
+expose it publicly without adding authentication. Use `-Port` to change the
+port.
 
 ### Hourly DuckDB snapshot
 
@@ -213,6 +289,16 @@ hashed in the Caddy access log.
 
 Startup and restart procedure after a computer reboot:
 **[GATEWAY-STARTUP.md](GATEWAY-STARTUP.md)**
+
+One-command startup after a reboot (starts the four MCP bridges, validates the
+`Caddyfile`, then starts or reloads Caddy):
+
+```powershell
+& 'C:\caddy-gateway\Start-CaddyGateway.ps1'
+```
+
+Or double-click `C:\caddy-gateway\Start-CaddyGateway.cmd`. The script logs to
+`C:\caddy-gateway\logs\startup.log`.
 
 ```powershell
 caddy validate --config C:\caddy-gateway\Caddyfile

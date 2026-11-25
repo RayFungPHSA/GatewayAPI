@@ -116,7 +116,7 @@ try {
 try {
     $tools = Invoke-McpJsonRpc -Id 2 -Method 'tools/list'
     $count = @($tools.result.tools).Count
-    Assert-Test 'MCP tools/list' ($count -eq 9) "(returned $count tools)"
+    Assert-Test 'MCP tools/list' ($count -eq 20) "(returned $count tools)"
 } catch {
     Assert-Test 'MCP tools/list' $false $_.Exception.Message
 }
@@ -195,6 +195,30 @@ foreach ($toolName in $arrayTools) {
         Assert-Test "MCP tools/call $toolName" $false $_.Exception.Message
     }
     $arrayToolId++
+}
+
+$objectListTools = @(
+    'vsphere_list_resource_pools'
+    'vsphere_list_folders'
+    'vsphere_list_content_libraries'
+    'vsphere_list_tag_categories'
+    'vsphere_list_tags'
+)
+$objectListToolId = 12
+foreach ($toolName in $objectListTools) {
+    try {
+        $call = Invoke-McpJsonRpc -Id $objectListToolId -Method 'tools/call' -Params @{
+            name      = $toolName
+            arguments = @{}
+        }
+        $payload = $call.result.structuredContent
+        $itemCount = @($payload.items).Count
+        $ok = (-not [bool]$call.result.isError) -and ($itemCount -gt 0) -and ($payload.onlineVCenters -gt 0)
+        Assert-Test "MCP tools/call $toolName" $ok "items: $itemCount, online vCenters: $($payload.onlineVCenters)"
+    } catch {
+        Assert-Test "MCP tools/call $toolName" $false $_.Exception.Message
+    }
+    $objectListToolId++
 }
 
 try {

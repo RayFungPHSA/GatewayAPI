@@ -121,6 +121,19 @@ READ_ONLY_TOOLS = {
     "get_protection_group_usage",
     "compare_protection_group_usage",
     "list_protection_group_usage_dates",
+    "get_data_protect_usage",
+    "get_alert_summary",
+    "get_alert_types",
+    "get_cluster_storage_stats",
+    "get_protection_group_run",
+    "get_protection_run_stats",
+    "get_object_snapshots",
+    "get_object_runs",
+    "list_storage_domains",
+    "list_file_views",
+    "list_external_targets",
+    "list_users",
+    "list_roles",
 }
 
 
@@ -355,6 +368,26 @@ def clone_tool(tool: types.Tool, **updates: Any) -> types.Tool:
     return copied.copy(update=updates)
 
 
+def as_read_only_tool(tool: types.Tool) -> types.Tool:
+    """Advertise MCP read-only annotations for tools in the read-only allowlist."""
+    annotations = getattr(tool, "annotations", None)
+    annotation_data: dict[str, Any] = {}
+    if annotations is not None and hasattr(annotations, "model_dump"):
+        annotation_data = annotations.model_dump()
+    annotation_data.update(
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=True,
+        openWorldHint=False,
+    )
+    description = str(getattr(tool, "description", "") or "").strip()
+    return clone_tool(
+        tool,
+        annotations=types.ToolAnnotations(**annotation_data),
+        description=(description + " (Gateway-enforced read-only tool.)").strip(),
+    )
+
+
 def read_only_api_schema(schema: Any) -> dict[str, Any]:
     """Constrain api_request to GET in the advertised tool schema."""
     result = json.loads(json.dumps(schema or {}))
@@ -417,6 +450,7 @@ async def list_tools() -> types.ListToolsResult:
                         ),
                         inputSchema=read_only_api_schema(tool.inputSchema),
                     )
+                tool = as_read_only_tool(tool)
                 visible.append(tool)
             tools = visible
 

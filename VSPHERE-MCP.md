@@ -155,6 +155,17 @@ All current vSphere tools are read-only:
 - `vsphere_list_datastores`
 - `vsphere_list_networks`
 - `vsphere_list_datacenters`
+- `vsphere_list_resource_pools`
+- `vsphere_get_resource_pool`
+- `vsphere_list_folders`
+- `vsphere_get_vm_guest_network_interfaces`
+- `vsphere_get_vm_guest_identity`
+- `vsphere_get_vm_ethernet`
+- `vsphere_get_vm_storage_policy`
+- `vsphere_get_datastore_default_policy`
+- `vsphere_list_content_libraries`
+- `vsphere_list_tag_categories`
+- `vsphere_list_tags`
 
 Read-only users see and can call all of them. There are no admin-only vSphere
 tools today. If a future upstream tool is mutating, it remains hidden from
@@ -280,6 +291,17 @@ Use HTTPS URLs instead if your client trusts the Caddy local CA.
 | `vsphere_list_datastores` | Lists datastores from all configured vCenters. |
 | `vsphere_list_networks` | Lists networks from all configured vCenters. |
 | `vsphere_list_datacenters` | Lists datacenter objects from all configured vCenters. |
+| `vsphere_list_resource_pools` | Lists resource pools from all configured vCenters. |
+| `vsphere_get_resource_pool` | Returns one resource pool by id or exact name; searches all configured vCenters. |
+| `vsphere_list_folders` | Lists inventory folders from all configured vCenters. |
+| `vsphere_get_vm_guest_network_interfaces` | Lists guest-network interfaces (MAC/IP) for one VM; searches all configured vCenters. |
+| `vsphere_get_vm_guest_identity` | Returns guest OS identity for one VM; searches all configured vCenters. |
+| `vsphere_get_vm_ethernet` | Lists virtual ethernet adapters for one VM; searches all configured vCenters. |
+| `vsphere_get_vm_storage_policy` | Returns the storage-policy association for one VM; searches all configured vCenters. |
+| `vsphere_get_datastore_default_policy` | Returns the default storage policy of one datastore by id or exact name. |
+| `vsphere_list_content_libraries` | Lists content libraries from all configured vCenters. |
+| `vsphere_list_tag_categories` | Lists tagging categories from all configured vCenters. |
+| `vsphere_list_tags` | Lists tags from all configured vCenters. |
 
 All vSphere tools query every URL in `C:\caddy-gateway\secrets\vsphere-server.txt` by default. A vCenter that is temporarily unreachable is reported in `failures` rather than aborting the whole query.
 

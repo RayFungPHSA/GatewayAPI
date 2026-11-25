@@ -91,13 +91,31 @@ class CookieJar {
 
 let session = null;
 
+// The authenticated console cookie must never be sent to another origin.
+// Caller-supplied paths in fetch_page/discover_endpoints are resolved against
+// the configured console, but an absolute or protocol-relative URL could
+// otherwise redirect that authenticated request elsewhere.
+const consoleOrigin = new URL(config.baseUrl).origin;
+function assertConsoleOrigin(url) {
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new Error("Blocked Lansweeper request with an unsupported URL scheme.");
+  }
+  if (url.username || url.password) {
+    throw new Error("Blocked Lansweeper request with URL credentials.");
+  }
+  if (url.origin !== consoleOrigin) {
+    throw new Error("Blocked Lansweeper request outside the configured console origin.");
+  }
+  return url;
+}
+
 function request(method, urlString, options = {}) {
   return new Promise((resolve, reject) => {
     let url;
     try {
-      url = new URL(urlString);
-    } catch {
-      reject(new Error(`Invalid URL: ${urlString}`));
+      url = assertConsoleOrigin(new URL(urlString));
+    } catch (error) {
+      reject(error);
       return;
     }
     const isHttps = url.protocol === "https:";
@@ -242,7 +260,7 @@ async function login({ force = false } = {}) {
 
 async function fetchPage(requestPath, query) {
   const current = await login();
-  const url = new URL(requestPath, `${config.baseUrl}/`);
+  const url = assertConsoleOrigin(new URL(requestPath, `${config.baseUrl}/`));
   for (const [key, value] of Object.entries(query ?? {})) {
     if (value !== undefined && value !== null && value !== "") {
       url.searchParams.set(key, String(value));

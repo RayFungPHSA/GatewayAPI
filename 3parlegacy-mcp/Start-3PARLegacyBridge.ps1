@@ -1,0 +1,79 @@
+$ErrorActionPreference = 'Stop'
+
+$BridgeDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RootDir = Split-Path -Parent $BridgeDir
+$SecretsDir = Join-Path $RootDir 'secrets'
+$CredentialFile = Join-Path $SecretsDir '3parlegacy.xml'
+$ServerFile = Join-Path $SecretsDir '3parlegacy-servers.json'
+$CredentialScript = Join-Path $BridgeDir 'scripts\Get-3PARLegacyGatewayCredential.ps1'
+$AclFile = Join-Path $SecretsDir 'cohesity-gateway-acl.json'
+$Script = Join-Path $BridgeDir 'http_bridge.py'
+$PidFile = Join-Path $BridgeDir 'bridge.pid'
+$LogFile = Join-Path $BridgeDir 'bridge.log'
+$ErrFile = Join-Path $BridgeDir 'bridge.err.log'
+$UsageLog = Join-Path $BridgeDir 'usage.jsonl'
+$Port = 8404
+
+foreach ($path in @($CredentialScript, $CredentialFile, $ServerFile)) {
+    if (-not (Test-Path -LiteralPath $path)) {
+        throw "Missing protected 3PARLegacy file: $path. Run Set-3PARLegacyGatewayCredential.ps1 first."
+    }
+}
+
+# Pass only the helper path to Python. The bridge decrypts the DPAPI record
+# itself; no secret value is placed in this process environment.
+$env:THREEPARLEGACY_CREDENTIAL_SCRIPT = $CredentialScript
+foreach ($name in @(
+    'THREEPAR_USERNAME', 'THREEPAR_PASSWORD', 'THREEPAR_SERVER', 'THREEPAR_SERVERS',
+    'HP3PAR_USERNAME', 'HP3PAR_PASSWORD', 'USERNAME', 'PASSWORD'
+)) {
+    Remove-Item -Path "Env:$name" -ErrorAction SilentlyContinue
+}
+Remove-Item -Path 'Env:THREEPARLEGACY_ENV_FILE' -ErrorAction SilentlyContinue
+
+$env:THREEPARLEGACY_GATEWAY_ACL = $AclFile
+$env:THREEPARLEGACY_USAGE_LOG = $UsageLog
+$env:THREEPARLEGACY_BRIDGE_HOST = '127.0.0.1'
+$env:THREEPARLEGACY_BRIDGE_PORT = "$Port"
+
+if (-not (Test-Path -LiteralPath $AclFile)) {
+    Write-Warning "Shared ACL file not found: $AclFile. All MCP requests will be denied until a token is issued."
+}
+
+$existing = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
+if ($existing) {
+    Write-Host "3PARLegacy MCP bridge is already listening on 127.0.0.1:$Port (PID $($existing[0].OwningProcess))."
+    exit 0
+}
+
+$proc = Start-Process -FilePath 'python' `
+    -ArgumentList @('"' + $Script + '"') `
+    -WorkingDirectory $BridgeDir `
+    -WindowStyle Hidden `
+    -RedirectStandardOutput $LogFile `
+    -RedirectStandardError $ErrFile `
+    -PassThru
+
+Set-Content -LiteralPath $PidFile -Value $proc.Id
+
+$ready = $false
+$health = $null
+for ($i = 0; $i -lt 30; $i++) {
+    Start-Sleep -Milliseconds 500
+    try {
+        $health = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/health" -TimeoutSec 2
+        if ($health.ok) { $ready = $true; break }
+    } catch { }
+}
+
+if (-not $ready) {
+    Write-Error "Bridge did not become ready. Check $LogFile and $ErrFile."
+    exit 1
+}
+
+Write-Host "3PARLegacy MCP bridge started on http://127.0.0.1:$Port/mcp (PID $($proc.Id))."
+Write-Host "Auth: shared gateway-token ACL; ACL users: $($health.acl_users)"
+Write-Host "Arrays: $($health.arrays -join ', ')"
+Write-Host 'Credential: loaded from DPAPI at startup; never accepted from clients or placed in environment variables.'
+Write-Host "Logs: $LogFile"
+Write-Host "Errors: $ErrFile"

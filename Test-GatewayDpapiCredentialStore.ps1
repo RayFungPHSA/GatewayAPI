@@ -64,6 +64,27 @@ $specs = @(
         Required = @()
         Port = 8403
     }
+    @{
+        Name = '3PARLegacy'
+        Xml = 'secrets\3parlegacy.xml'
+        Helper = '3parlegacy-mcp\scripts\Get-3PARLegacyGatewayCredential.ps1'
+        Required = @('username', 'password', 'servers')
+        Port = 8404
+    }
+    @{
+        Name = 'HPEXP8'
+        Xml = 'secrets\hpexp8.xml'
+        Helper = 'hpexp8-mcp\scripts\Get-HPEXP8GatewayCredential.ps1'
+        Required = @('username', 'password', 'servers')
+        Port = 8405
+    }
+    @{
+        Name = 'Brocade'
+        Xml = 'secrets\brocade.xml'
+        Helper = 'brocade-mcp\scripts\Get-BrocadeGatewayCredential.ps1'
+        Required = @('username', 'password', 'server')
+        Port = 8406
+    }
 )
 
 foreach ($spec in $specs) {
@@ -80,7 +101,10 @@ foreach ($spec in $specs) {
                 $data = $raw | ConvertFrom-Json
                 $names = @($data.PSObject.Properties.Name)
                 $missing = @($spec.Required | Where-Object {
-                    $names -notcontains $_ -or [string]::IsNullOrWhiteSpace([string]$data.$_)
+                    if ($names -notcontains $_) { return $true }
+                    $value = $data.$_
+                    if ($value -is [array]) { return @($value).Count -eq 0 }
+                    return [string]::IsNullOrWhiteSpace([string]$value)
                 })
                 Assert-Test "$($spec.Name): helper returns required fields" ($missing.Count -eq 0)
             } else {
@@ -99,7 +123,7 @@ foreach ($spec in $specs) {
     }
 }
 
-foreach ($name in @('cohesity-gateway.env', 'hpegreenlake-gateway.env', 'lansweeper-gateway.env')) {
+foreach ($name in @('cohesity-gateway.env', 'hpegreenlake-gateway.env', 'lansweeper-gateway.env', '3parlegacy-gateway.env', 'hpexp8-gateway.env', 'brocade-gateway.env')) {
     $legacy = Join-Path $RootDir "secrets\$name"
     Assert-Test "Legacy plaintext file absent: $name" (-not (Test-Path -LiteralPath $legacy))
 }

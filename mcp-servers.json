@@ -50,6 +50,33 @@
       "https_url": "https://10.53.19.120:8088/vsphere/mcp",
       "health_http_url": "http://10.53.19.120:8081/vsphere/health",
       "health_https_url": "https://10.53.19.120:8088/vsphere/health"
+    },
+    {
+      "name": "3PARLegacy",
+      "description": "Legacy HPE 3PAR WSAPI read-only MCP tools (JPN3PAR01 and cw3par02.phsabc.ehcnet.ca)",
+      "protocol": "streamable-http",
+      "http_url": "http://10.53.19.120:8081/3parlegacy/mcp",
+      "https_url": "https://10.53.19.120:8088/3parlegacy/mcp",
+      "health_http_url": "http://10.53.19.120:8081/3parlegacy/health",
+      "health_https_url": "https://10.53.19.120:8088/3parlegacy/health"
+    },
+    {
+      "name": "HPEXP8",
+      "description": "HPE XP Performance Advisor 8.5 read-only MCP tools (spapphpxp001 online, spapphpxp003 firewall-pending)",
+      "protocol": "streamable-http",
+      "http_url": "http://10.53.19.120:8081/hpexp8/mcp",
+      "https_url": "https://10.53.19.120:8088/hpexp8/mcp",
+      "health_http_url": "http://10.53.19.120:8081/hpexp8/health",
+      "health_https_url": "https://10.53.19.120:8088/hpexp8/health"
+    },
+    {
+      "name": "Brocade",
+      "description": "Brocade SANnav read-only MCP tools for fabrics, switches, hosts, storages, ports, zones, and connectivity",
+      "protocol": "streamable-http",
+      "http_url": "http://10.53.19.120:8081/brocade/mcp",
+      "https_url": "https://10.53.19.120:8088/brocade/mcp",
+      "health_http_url": "http://10.53.19.120:8081/brocade/health",
+      "health_https_url": "https://10.53.19.120:8088/brocade/health"
     }
   ]
 }

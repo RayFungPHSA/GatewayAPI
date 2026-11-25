@@ -7,8 +7,11 @@ Falls back to the raw access logs if the snapshot is not available yet.
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
+import os
 from pathlib import Path
 import sys
+from zoneinfo import ZoneInfo
 
 import duckdb
 import pandas as pd
@@ -26,6 +29,38 @@ from gateway_usage_report import (  # noqa: E402
 
 SNAPSHOT_DB = str(ROOT / "analytics" / "usage.duckdb")
 LOG_PATTERN = str(ROOT / "logs" / "access*.log")
+DISPLAY_TZ_NAME = os.environ.get("GATEWAY_DISPLAY_TZ", "America/Vancouver")
+TIME_FORMAT = "%Y-%m-%d %H:%M:%S %Z %z"
+
+
+def detect_display_timezone():
+    """Vancouver/Pacific time by default; fall back to the host timezone."""
+    try:
+        return ZoneInfo(DISPLAY_TZ_NAME)
+    except Exception:
+        pass
+    try:
+        con = duckdb.connect()
+        name = con.sql("SELECT current_setting('timezone')").fetchall()[0][0]
+        con.close()
+        try:
+            return ZoneInfo(name)
+        except Exception:
+            pass
+    except Exception:
+        pass
+    return datetime.now().astimezone().tzinfo or timezone.utc
+
+
+LOCAL_TZ = detect_display_timezone()
+
+
+def tz_label(tz) -> str:
+    key = getattr(tz, "key", str(tz))
+    if key == "America/Vancouver":
+        return "America/Vancouver (Pacific Time, UTC-07:00)"
+    return key
+
 
 st.set_page_config(page_title="Gateway Usage", page_icon="📈", layout="wide")
 st.title("Caddy Gateway Usage")
@@ -79,6 +114,10 @@ period = st.sidebar.selectbox(
 )
 include_health = st.sidebar.checkbox("Include health checks", value=False)
 include_probes = st.sidebar.checkbox("Include scanner probes", value=False)
+granularity = st.sidebar.selectbox("Chart granularity", options=["Hourly", "Daily"], index=0)
+show_utc = st.sidebar.checkbox("Show UTC instead", value=False)
+DISPLAY_TZ = timezone.utc if show_utc else LOCAL_TZ
+st.sidebar.caption(f"Times shown in {tz_label(DISPLAY_TZ)}")
 if st.sidebar.button("Refresh data"):
     st.cache_data.clear()
 
@@ -99,8 +138,10 @@ else:
 if raw is None:
     raw = load_events(LOG_PATTERN, DEFAULT_ACL)
 
+raw["ts"] = pd.to_datetime(raw["ts"], utc=True).dt.tz_convert(DISPLAY_TZ)
+
 if period:
-    cutoff = pd.Timestamp.now(tz="UTC") - pd.Timedelta(days=period)
+    cutoff = pd.Timestamp.now(tz=DISPLAY_TZ) - pd.Timedelta(days=period)
     raw = raw[raw["ts"] >= cutoff]
 if not include_health:
     raw = raw[~raw["is_health"]]
@@ -114,10 +155,11 @@ chosen_users = st.sidebar.multiselect("User", users, default=users)
 df = raw[raw["endpoint"].isin(chosen_endpoints) & raw["caller"].isin(chosen_users)].copy()
 
 if meta is not None and not meta.empty:
-    built = pd.to_datetime(meta.loc[0, "built_utc"], utc=True)
-    age = pd.Timestamp.now(tz="UTC") - built
+    built_utc = pd.to_datetime(meta.loc[0, "built_utc"], utc=True)
+    built_display = built_utc.tz_convert(DISPLAY_TZ)
+    age = pd.Timestamp.now(tz="UTC") - built_utc
     source = (
-        f"Snapshot: {SNAPSHOT_DB} · built {built:%Y-%m-%d %H:%M:%S UTC} "
+        f"Snapshot: {SNAPSHOT_DB} · built {built_display:{TIME_FORMAT}} "
         f"({age.total_seconds() / 60:.0f} min ago) · {int(meta.loc[0, 'total_rows']):,} events"
     )
 else:
@@ -129,7 +171,9 @@ if meta is not None and not meta.empty:
         st.warning(f"Snapshot is {age.total_seconds() / 3600:.1f} hours old. Check the scheduled task.")
 
 st.caption(
-    source + " · Names come from the gateway ACL; `(unmapped)` means the token hash is not in the ACL."
+    source
+    + f" · times in {tz_label(DISPLAY_TZ)}"
+    + " · Names come from the gateway ACL; `(unmapped)` means the token hash is not in the ACL."
 )
 
 if df.empty:
@@ -146,16 +190,34 @@ col3.metric("MCP endpoints", mcp["endpoint"].nunique())
 col4.metric("4xx / 5xx", f"{len(errors):,}")
 col5.metric("p95 latency", f"{df['duration'].quantile(0.95) * 1000:.0f} ms")
 
-st.subheader("Daily requests by MCP endpoint")
-daily = (
-    mcp.groupby([pd.Grouper(key="ts", freq="D"), "endpoint"])
-    .size()
-    .unstack(fill_value=0)
-)
-if daily.empty:
-    st.info("No MCP requests in this window.")
+st.subheader(f"{granularity} requests by MCP endpoint")
+if granularity == "Hourly":
+    hourly = (
+        mcp.assign(hour=mcp["ts"].dt.floor("h"))
+        .groupby(["hour", "endpoint"])
+        .size()
+        .unstack(fill_value=0)
+    )
+    hourly.index = hourly.index.strftime("%m-%d %H:%M")
+    if hourly.empty:
+        st.info("No MCP requests in this window.")
+    else:
+        st.line_chart(hourly)
+        st.caption("The latest hour is partial through the most recent snapshot.")
 else:
-    st.line_chart(daily)
+    daily = (
+        mcp.assign(day=mcp["ts"].dt.date)
+        .groupby(["day", "endpoint"])
+        .size()
+        .unstack(fill_value=0)
+    )
+    daily.index = daily.index.map(lambda d: d.strftime("%Y-%m-%d"))
+    if daily.empty:
+        st.info("No MCP requests in this window.")
+    else:
+        st.line_chart(daily)
+        if period == 1:
+            st.caption("Today is partial through the most recent snapshot.")
 
 left, right = st.columns(2)
 
@@ -200,13 +262,15 @@ user_stats = (
     .reset_index()
     .sort_values("requests", ascending=False)
 )
+user_stats["last_seen"] = user_stats["last_seen"].dt.strftime(TIME_FORMAT)
 st.dataframe(user_stats, width="stretch", hide_index=True)
 
 with st.expander("Most recent requests"):
-    st.dataframe(
+    recent = (
         df[["ts", "endpoint", "caller", "client_ip", "status", "duration"]]
         .sort_values("ts", ascending=False)
-        .head(100),
-        width="stretch",
-        hide_index=True,
+        .head(100)
+        .copy()
     )
+    recent["ts"] = recent["ts"].dt.strftime(TIME_FORMAT)
+    st.dataframe(recent, width="stretch", hide_index=True)

@@ -154,6 +154,12 @@ Read-only tokens cannot call:
 Admin tools are also hidden from `tools/list` for read-only users. The
 read-only `api_request` schema advertises `method` as `GET` only.
 
+The read-only toolset includes dedicated GET operations for clusters,
+protection groups and runs, policies, alerts, protected objects, recoveries,
+audit logs, sources, tenants, encryption, and usage history. The full inventory
+and the official endpoints behind each tool are recorded in
+[VENDOR-API-COVERAGE.md](VENDOR-API-COVERAGE.md).
+
 ---
 
 ## 3. Gateway owner: start the bridge
