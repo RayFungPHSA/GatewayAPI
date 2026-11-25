@@ -202,7 +202,7 @@ Without a gateway token:
 & 'C:\caddy-gateway\Test-McpDiscovery.ps1'
 ```
 
-With your gateway token in `$env:COHESITY_GATEWAY_TOKEN`:
+With your gateway token in `$env:CADDY_GATEWAY_TOKEN`:
 
 ```powershell
 & 'C:\caddy-gateway\Test-CohesityMcp.ps1'
@@ -230,7 +230,7 @@ variables described in `README.md`.
 | `/3parlegacy/health` is OK but tools report `JPN3PAR01: timed out` | The gateway host cannot reach `142.71.40.232:443` yet. The bridge is healthy; the array firewall rule is still pending. |
 | `/hpexp8/health` is OK but `spapphpxp003.fraserhealth.org` is in `failures` | TCP/80 to `10.118.212.9` is blocked or the server is down. `spapphpxp001.healthbc.org` remains usable. |
 | HTTPS certificate warning | Use HTTP `:8081`, install `caddy-local-root.crt`, or use `curl.exe --ssl-no-revoke` on Windows. |
-| MCP client says token placeholder is unexpanded | Set `COHESITY_GATEWAY_TOKEN` in the client environment, then run `opencode service restart` or open a new terminal. |
+| MCP client says token placeholder is unexpanded | Set `CADDY_GATEWAY_TOKEN` in the client environment, then run `opencode service restart` or open a new terminal. |
 | Gateway returns generic Caddy page for `/todos/1` | Reload Caddy with the current `Caddyfile`, then retry. |
 
 Bridge logs:

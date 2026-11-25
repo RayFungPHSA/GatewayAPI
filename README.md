@@ -59,7 +59,7 @@ Logs: `logs\service.log`, `logs\startup.log`, and `logs\shutdown.log`.
 .\Test-CaddyGateway.ps1
 .\Test-CaddyGateway-Curl.ps1
 .\Test-VSMonitoring-Curl.ps1
-.\Test-McpDiscovery.ps1             # needs $env:COHESITY_GATEWAY_TOKEN
+.\Test-McpDiscovery.ps1             # needs $env:CADDY_GATEWAY_TOKEN
 ```
 
 Cohesity MCP setup, DPAPI-protected server-side key, and per-user ACL instructions:
@@ -104,15 +104,18 @@ User-facing setup guide to share with remote users:
 **[GATEWAY-USER-SETUP.md](GATEWAY-USER-SETUP.md)**
 
 Single consolidated setup/discovery prompt for new and returning users. The
-user sets `COHESITY_GATEWAY_TOKEN` locally first; the AI harness never sees or
+user sets `CADDY_GATEWAY_TOKEN` locally first; the AI harness never sees or
 handles the token value. It reads the MCP catalog at `/mcp/servers`, so it does
 not need editing when new MCP servers are added:
 **[GATEWAY-ONE-PROMPT-WITH-TOKEN.md](GATEWAY-ONE-PROMPT-WITH-TOKEN.md)**
 
+Gateway token variable naming, migration, and rollback:
+**[GATEWAY-TOKEN-VARIABLE.md](GATEWAY-TOKEN-VARIABLE.md)**
+
 MCP catalog endpoint (no auth): `http://10.53.19.120:8081/mcp/servers`, backed by
 [`mcp-servers.json`](mcp-servers.json).
 
-MCP tests (after setting `$env:COHESITY_GATEWAY_TOKEN` to your issued token):
+MCP tests (after setting `$env:CADDY_GATEWAY_TOKEN` to your issued token):
 
 ```powershell
 .\Test-CohesityMcp.ps1

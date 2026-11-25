@@ -53,7 +53,7 @@ Gateway validates your token, role, and allowed tools
 | vSphere URL, HTTPS | `https://10.53.19.120:8088/vsphere/mcp` |
 | vSphere health | `http://10.53.19.120:8081/vsphere/health` |
 | Your credential | The gateway token from the gateway owner |
-| Environment variable name | `COHESITY_GATEWAY_TOKEN` |
+| Environment variable name | `CADDY_GATEWAY_TOKEN` |
 | Header name | `X-Gateway-Token` |
 
 Most users have the `read-only` role. Ray Fung has the `admin` role.
@@ -67,7 +67,7 @@ Most users have the `read-only` role. Ray Fung has the `admin` role.
 Run this in a terminal and replace the placeholder with your token:
 
 ```powershell
-setx COHESITY_GATEWAY_TOKEN "<paste-your-gateway-token-here>"
+setx CADDY_GATEWAY_TOKEN "<paste-your-gateway-token-here>"
 ```
 
 Then **open a new terminal** so the variable is visible.
@@ -75,13 +75,19 @@ Then **open a new terminal** so the variable is visible.
 Check it without displaying the token:
 
 ```powershell
-if ($env:COHESITY_GATEWAY_TOKEN) { Write-Host 'Gateway token is set.' } else { Write-Host 'Gateway token is NOT set.' }
+if ($env:CADDY_GATEWAY_TOKEN) { Write-Host 'Gateway token is set.' } else { Write-Host 'Gateway token is NOT set.' }
 ```
+
+> **Already using `COHESITY_GATEWAY_TOKEN`?** That old name is still accepted, so
+> nothing breaks immediately. To migrate without retyping your token, run
+> `& 'C:\caddy-gateway\Set-GatewayTokenAlias.ps1'` from a normal PowerShell
+> terminal, then restart your MCP client. Full rollback instructions are in
+> [GATEWAY-TOKEN-VARIABLE.md](GATEWAY-TOKEN-VARIABLE.md).
 
 ### macOS / Linux
 
 ```bash
-export COHESITY_GATEWAY_TOKEN='<paste-your-gateway-token-here>'
+export CADDY_GATEWAY_TOKEN='<paste-your-gateway-token-here>'
 ```
 
 To make it permanent, add that line to your shell profile such as
@@ -114,7 +120,7 @@ Merge this into the existing JSON:
         "url": "http://10.53.19.120:8081/cohesity/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       },
       "hpegreenlake": {
@@ -122,7 +128,7 @@ Merge this into the existing JSON:
         "url": "http://10.53.19.120:8081/hpegreenlake/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       },
       "lansweeper": {
@@ -130,7 +136,7 @@ Merge this into the existing JSON:
         "url": "http://10.53.19.120:8081/lansweeper/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       },
       "vsphere": {
@@ -138,7 +144,7 @@ Merge this into the existing JSON:
         "url": "http://10.53.19.120:8081/vsphere/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       }
     }
@@ -148,7 +154,7 @@ Merge this into the existing JSON:
 
 `oauth: false` is required. Keep any other entries already in `"servers"`.
 
-If you just set or changed `COHESITY_GATEWAY_TOKEN`, restart the OpenCode
+If you just set or changed `CADDY_GATEWAY_TOKEN`, restart the OpenCode
 service so it inherits the new environment:
 
 ```powershell
@@ -167,7 +173,7 @@ File: `%USERPROFILE%\.config\opencode\opencode.json`
       "url": "http://10.53.19.120:8081/cohesity/mcp",
       "enabled": true,
       "headers": {
-        "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
       }
     },
     "hpegreenlake": {
@@ -175,7 +181,7 @@ File: `%USERPROFILE%\.config\opencode\opencode.json`
       "url": "http://10.53.19.120:8081/hpegreenlake/mcp",
       "enabled": true,
       "headers": {
-        "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
       }
     },
     "lansweeper": {
@@ -183,7 +189,7 @@ File: `%USERPROFILE%\.config\opencode\opencode.json`
       "url": "http://10.53.19.120:8081/lansweeper/mcp",
       "enabled": true,
       "headers": {
-        "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
       }
     },
     "vsphere": {
@@ -191,7 +197,7 @@ File: `%USERPROFILE%\.config\opencode\opencode.json`
       "url": "http://10.53.19.120:8081/vsphere/mcp",
       "enabled": true,
       "headers": {
-        "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
       }
     }
   }
@@ -211,28 +217,28 @@ File: `.mcp.json` in your repo, or `claude_desktop_config.json`
       "type": "http",
       "url": "http://10.53.19.120:8081/cohesity/mcp",
       "headers": {
-        "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}"
       }
     },
     "hpegreenlake": {
       "type": "http",
       "url": "http://10.53.19.120:8081/hpegreenlake/mcp",
       "headers": {
-        "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}"
       }
     },
     "lansweeper": {
       "type": "http",
       "url": "http://10.53.19.120:8081/lansweeper/mcp",
       "headers": {
-        "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}"
       }
     },
     "vsphere": {
       "type": "http",
       "url": "http://10.53.19.120:8081/vsphere/mcp",
       "headers": {
-        "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}"
       }
     }
   }
@@ -254,7 +260,7 @@ For each:
 
 - Type: `http` or `remote`
 - OAuth: disabled, if the harness has that option
-- Header: `X-Gateway-Token: <value from COHESITY_GATEWAY_TOKEN>`
+- Header: `X-Gateway-Token: <value from CADDY_GATEWAY_TOKEN>`
 
 Merge with existing server entries. Do not replace unrelated configuration.
 
@@ -286,28 +292,28 @@ This uses your token but does not print it:
 
 ```powershell
 curl.exe -sS `
-  -H "X-Gateway-Token: $env:COHESITY_GATEWAY_TOKEN" `
+  -H "X-Gateway-Token: $env:CADDY_GATEWAY_TOKEN" `
   -H "Accept: application/json, text/event-stream" `
   -H "Content-Type: application/json" `
   --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' `
   http://10.53.19.120:8081/cohesity/mcp
 
 curl.exe -sS `
-  -H "X-Gateway-Token: $env:COHESITY_GATEWAY_TOKEN" `
+  -H "X-Gateway-Token: $env:CADDY_GATEWAY_TOKEN" `
   -H "Accept: application/json, text/event-stream" `
   -H "Content-Type: application/json" `
   --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' `
   http://10.53.19.120:8081/hpegreenlake/mcp
 
 curl.exe -sS `
-  -H "X-Gateway-Token: $env:COHESITY_GATEWAY_TOKEN" `
+  -H "X-Gateway-Token: $env:CADDY_GATEWAY_TOKEN" `
   -H "Accept: application/json, text/event-stream" `
   -H "Content-Type: application/json" `
   --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' `
   http://10.53.19.120:8081/lansweeper/mcp
 
 curl.exe -sS `
-  -H "X-Gateway-Token: $env:COHESITY_GATEWAY_TOKEN" `
+  -H "X-Gateway-Token: $env:CADDY_GATEWAY_TOKEN" `
   -H "Accept: application/json, text/event-stream" `
   -H "Content-Type: application/json" `
   --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' `
@@ -439,14 +445,14 @@ needed.
 | Symptom | Meaning / fix |
 |---|---|
 | `A gateway token is required` | The `X-Gateway-Token` header is missing. Check your MCP config. |
-| Header contains an unexpanded placeholder | Your client sent literal `${COHESITY_GATEWAY_TOKEN}` or `{env:COHESITY_GATEWAY_TOKEN}`. Set the environment variable and restart the client/service. |
+| Header contains an unexpanded placeholder | Your client sent literal `${CADDY_GATEWAY_TOKEN}` or `{env:CADDY_GATEWAY_TOKEN}`. Set the environment variable and restart the client/service. |
 | HTTP 403 `This gateway token is not authorized` | The token is wrong, revoked, or not in the ACL. Ask the gateway owner to check. |
 | Tool error says `admin-only` | Your token is read-only. This is expected unless you are the admin. |
 | Tool error says `GET only` | `api_request` is restricted to GET for read-only users. |
 | HTTP 400 about client-supplied keys | Remove GreenLake/HPE/Cohesity/Lansweeper/vSphere key headers. Send only `X-Gateway-Token`. |
 | `Connection refused` | The gateway host or a bridge may be down. Check `/cohesity/health`, `/hpegreenlake/health`, `/lansweeper/health`, or `/vsphere/health`. |
 | HTTPS certificate error | Use HTTP `:8081`, install the Caddy local root certificate, or use `--ssl-no-revoke` with curl.exe on Windows. |
-| OpenCode does not see the token | Run `opencode service restart` after changing `COHESITY_GATEWAY_TOKEN`, or start OpenCode from a new terminal. |
+| OpenCode does not see the token | Run `opencode service restart` after changing `CADDY_GATEWAY_TOKEN`, or start OpenCode from a new terminal. |
 
 ---
 
@@ -462,8 +468,8 @@ C:\caddy-gateway\GATEWAY-ONE-PROMPT-WITH-TOKEN.md
   the whole document into your harness. Do not paste the token into the chat.
 
   ```powershell
-  $env:COHESITY_GATEWAY_TOKEN = '<token issued by gateway owner>'   # current session
-  setx COHESITY_GATEWAY_TOKEN '<token issued by gateway owner>'      # persistent
+  $env:CADDY_GATEWAY_TOKEN = '<token issued by gateway owner>'   # current session
+  setx CADDY_GATEWAY_TOKEN '<token issued by gateway owner>'      # persistent
   ```
 
 - **New or returning user:** paste the entire document as-is. The top section is
@@ -474,5 +480,5 @@ C:\caddy-gateway\GATEWAY-ONE-PROMPT-WITH-TOKEN.md
   not need to edit the prompt when another MCP server is published.
 
 The harness should never ask you for the token. If it does, set
-`COHESITY_GATEWAY_TOKEN` locally and paste the prompt again. Never paste the
+`CADDY_GATEWAY_TOKEN` locally and paste the prompt again. Never paste the
 token into a shared channel.

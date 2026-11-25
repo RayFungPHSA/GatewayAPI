@@ -226,13 +226,13 @@ caddy reload --config C:\caddy-gateway\Caddyfile
 
 ## 4. Each user: configure your MCP client
 
-Reuse the same `COHESITY_GATEWAY_TOKEN` environment variable. Add a second MCP
+Reuse the same `CADDY_GATEWAY_TOKEN` environment variable. Add a second MCP
 server entry named `hpegreenlake`; keep the existing `cohesity` entry.
 
 The consolidated prompt in
 **[GATEWAY-ONE-PROMPT-WITH-TOKEN.md](GATEWAY-ONE-PROMPT-WITH-TOKEN.md)** does
 this automatically by reading `/mcp/servers`. It assumes the user has already
-set `COHESITY_GATEWAY_TOKEN` locally and never handles the token value itself.
+set `CADDY_GATEWAY_TOKEN` locally and never handles the token value itself.
 
 ### OpenCode 2.x
 
@@ -246,7 +246,7 @@ set `COHESITY_GATEWAY_TOKEN` locally and never handles the token value itself.
         "url": "http://10.53.19.120:8081/cohesity/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       },
       "hpegreenlake": {
@@ -254,7 +254,7 @@ set `COHESITY_GATEWAY_TOKEN` locally and never handles the token value itself.
         "url": "http://10.53.19.120:8081/hpegreenlake/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       }
     }
@@ -278,7 +278,7 @@ opencode service restart
       "url": "http://10.53.19.120:8081/cohesity/mcp",
       "enabled": true,
       "headers": {
-        "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
       }
     },
     "hpegreenlake": {
@@ -286,7 +286,7 @@ opencode service restart
       "url": "http://10.53.19.120:8081/hpegreenlake/mcp",
       "enabled": true,
       "headers": {
-        "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
       }
     }
   }
@@ -302,14 +302,14 @@ opencode service restart
       "type": "http",
       "url": "http://10.53.19.120:8081/cohesity/mcp",
       "headers": {
-        "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}"
       }
     },
     "hpegreenlake": {
       "type": "http",
       "url": "http://10.53.19.120:8081/hpegreenlake/mcp",
       "headers": {
-        "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}"
       }
     }
   }
@@ -325,7 +325,7 @@ Use HTTPS URLs instead if your client trusts the Caddy local CA.
 Set the token for the current session:
 
 ```powershell
-$env:COHESITY_GATEWAY_TOKEN = '<your gateway token>'
+$env:CADDY_GATEWAY_TOKEN = '<your gateway token>'
 ```
 
 Then run:
@@ -340,8 +340,8 @@ Expected: 6 passed / 0 failed and 7 passed / 0 failed.
 Guardrail verification (uses one admin and one read-only token):
 
 ```powershell
-$env:COHESITY_GATEWAY_ADMIN_TOKEN = '<ray.fung token>'
-$env:COHESITY_GATEWAY_READONLY_TOKEN = '<a read-only user token>'
+$env:CADDY_GATEWAY_ADMIN_TOKEN = '<ray.fung token>'
+$env:CADDY_GATEWAY_READONLY_TOKEN = '<a read-only user token>'
 C:\caddy-gateway\Test-HPEGreenLakeMcpGuardrails.ps1
 ```
 
@@ -357,7 +357,7 @@ C:\caddy-gateway\Test-HPEGreenLakeMcp.ps1 -BaseUrl https://10.53.19.120:8088 -Al
 One-line raw check:
 
 ```powershell
-curl.exe -sS -H "X-Gateway-Token: $env:COHESITY_GATEWAY_TOKEN" -H "Accept: application/json, text/event-stream" -H "Content-Type: application/json" --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' http://10.53.19.120:8081/hpegreenlake/mcp
+curl.exe -sS -H "X-Gateway-Token: $env:CADDY_GATEWAY_TOKEN" -H "Accept: application/json, text/event-stream" -H "Content-Type: application/json" --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' http://10.53.19.120:8081/hpegreenlake/mcp
 ```
 
 ---
@@ -384,7 +384,7 @@ Entries include `server`, `user`, `role`, `token_fp`, `client_ip`, `event`,
 | Symptom | Cause / fix |
 |---|---|
 | HTTP 401 `A gateway token is required` | Client is not sending `X-Gateway-Token`. |
-| HTTP 401 unexpanded placeholder | Restart the client after setting `COHESITY_GATEWAY_TOKEN`. |
+| HTTP 401 unexpanded placeholder | Restart the client after setting `CADDY_GATEWAY_TOKEN`. |
 | HTTP 403 `not authorized for HPEGreenLake MCP` | Token is missing from the shared ACL or was rotated. |
 | HTTP 400 about client-supplied keys | Remove GreenLake/HPE/Cohesity key headers; send only `X-Gateway-Token`. |
 | Tool says `not available to read-only users` | The tool is not on the explicit allowlist. Ask the gateway owner. |

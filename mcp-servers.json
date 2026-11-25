@@ -9,9 +9,10 @@
   },
   "auth": {
     "header": "X-Gateway-Token",
-    "env_var": "COHESITY_GATEWAY_TOKEN",
+    "env_var": "CADDY_GATEWAY_TOKEN",
+    "legacy_env_var": "COHESITY_GATEWAY_TOKEN",
     "oauth": false,
-    "note": "The env var name is retained for compatibility. The same token and role are used for every MCP server in this catalog."
+    "note": "CADDY_GATEWAY_TOKEN is canonical. COHESITY_GATEWAY_TOKEN remains accepted as a deprecated alias for rollback. The same token and role are used for every MCP server in this catalog."
   },
   "discovery_url": "http://10.53.19.120:8081/mcp/servers",
   "servers": [

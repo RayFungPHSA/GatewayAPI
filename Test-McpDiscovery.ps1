@@ -2,11 +2,11 @@
 .SYNOPSIS
     Verify the MCP catalog endpoint and that every listed server is usable.
 
-    Requires $env:COHESITY_GATEWAY_TOKEN for the tools/list checks. The token is
+    Requires $env:CADDY_GATEWAY_TOKEN for the tools/list checks. The token is
     never echoed or written to disk.
 
 .EXAMPLE
-    $env:COHESITY_GATEWAY_TOKEN = '<token issued to you>'
+    $env:CADDY_GATEWAY_TOKEN = '<token issued to you>'
     .\Test-McpDiscovery.ps1
 #>
 [CmdletBinding()]
@@ -15,12 +15,23 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Legacy gateway-token environment variable aliases remain supported for rollback.
+if (-not $env:CADDY_GATEWAY_TOKEN -and $env:COHESITY_GATEWAY_TOKEN) {
+    $env:CADDY_GATEWAY_TOKEN = $env:COHESITY_GATEWAY_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_ADMIN_TOKEN -and $env:COHESITY_GATEWAY_ADMIN_TOKEN) {
+    $env:CADDY_GATEWAY_ADMIN_TOKEN = $env:COHESITY_GATEWAY_ADMIN_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_READONLY_TOKEN -and $env:COHESITY_GATEWAY_READONLY_TOKEN) {
+    $env:CADDY_GATEWAY_READONLY_TOKEN = $env:COHESITY_GATEWAY_READONLY_TOKEN
+}
 $BaseUrl = $BaseUrl.TrimEnd('/')
 $script:Passed = 0
 $script:Failed = 0
 
-if (-not $env:COHESITY_GATEWAY_TOKEN) {
-    throw 'Set $env:COHESITY_GATEWAY_TOKEN before running this test.'
+if (-not $env:CADDY_GATEWAY_TOKEN) {
+    throw 'Set $env:CADDY_GATEWAY_TOKEN before running this test.'
 }
 
 function Assert-Test {
@@ -74,7 +85,7 @@ if ($catalog) {
                 -Uri $server.http_url `
                 -Method Post `
                 -Headers @{
-                    'X-Gateway-Token' = $env:COHESITY_GATEWAY_TOKEN
+                    'X-Gateway-Token' = ($env:CADDY_GATEWAY_TOKEN, $env:COHESITY_GATEWAY_TOKEN | Where-Object { $_ } | Select-Object -First 1)
                     'Accept'          = 'application/json, text/event-stream'
                 } `
                 -ContentType 'application/json' `

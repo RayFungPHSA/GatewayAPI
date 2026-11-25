@@ -2,16 +2,16 @@
 .SYNOPSIS
     End-to-end test for the Cohesity MCP route through the Caddy gateway.
 
-    The caller's per-user gateway token must be in $env:COHESITY_GATEWAY_TOKEN.
+    The caller's per-user gateway token must be in $env:CADDY_GATEWAY_TOKEN.
     It is sent in the X-Gateway-Token header. The Cohesity API key is never
     sent by a client and is never written to a file by this script.
 
 .EXAMPLE
-    $env:COHESITY_GATEWAY_TOKEN = '<token issued to you>'
+    $env:CADDY_GATEWAY_TOKEN = '<token issued to you>'
     .\Test-CohesityMcp.ps1
 
 .EXAMPLE
-    $env:COHESITY_GATEWAY_TOKEN = '<token issued to you>'
+    $env:CADDY_GATEWAY_TOKEN = '<token issued to you>'
     .\Test-CohesityMcp.ps1 -BaseUrl https://10.53.19.120:8088 -AllowUntrustedCertificate
 #>
 [CmdletBinding()]
@@ -21,12 +21,23 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Legacy gateway-token environment variable aliases remain supported for rollback.
+if (-not $env:CADDY_GATEWAY_TOKEN -and $env:COHESITY_GATEWAY_TOKEN) {
+    $env:CADDY_GATEWAY_TOKEN = $env:COHESITY_GATEWAY_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_ADMIN_TOKEN -and $env:COHESITY_GATEWAY_ADMIN_TOKEN) {
+    $env:CADDY_GATEWAY_ADMIN_TOKEN = $env:COHESITY_GATEWAY_ADMIN_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_READONLY_TOKEN -and $env:COHESITY_GATEWAY_READONLY_TOKEN) {
+    $env:CADDY_GATEWAY_READONLY_TOKEN = $env:COHESITY_GATEWAY_READONLY_TOKEN
+}
 $BaseUrl = $BaseUrl.TrimEnd('/')
 $script:Passed = 0
 $script:Failed = 0
 
-if (-not $env:COHESITY_GATEWAY_TOKEN) {
-    throw 'Set $env:COHESITY_GATEWAY_TOKEN to your gateway token before running this test.'
+if (-not $env:CADDY_GATEWAY_TOKEN) {
+    throw 'Set $env:CADDY_GATEWAY_TOKEN to your gateway token before running this test.'
 }
 
 if ($AllowUntrustedCertificate) {
@@ -38,7 +49,7 @@ function Invoke-McpJsonRpc {
         [Parameter(Mandatory)][int]$Id,
         [Parameter(Mandatory)][string]$Method,
         [hashtable]$Params = @{},
-        [string]$Token = $env:COHESITY_GATEWAY_TOKEN
+        [string]$Token = ($env:CADDY_GATEWAY_TOKEN, $env:COHESITY_GATEWAY_TOKEN | Where-Object { $_ } | Select-Object -First 1)
     )
     $payload = @{
         jsonrpc = '2.0'

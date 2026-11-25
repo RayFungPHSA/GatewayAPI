@@ -1,13 +1,15 @@
-# GitHub Copilot & Cohesity Gateway Setup
+# GitHub Copilot & Caddy API Gateway Setup
 
 ## 1. Set the Environment Variable
 
 Open a standard **PowerShell** terminal (do **not** run as Administrator) and run both commands to set the token for your current session and persist it for future sessions:
 
 ```powershell
-$env:COHESITY_GATEWAY_TOKEN = '<token issued by gateway owner>'
-setx COHESITY_GATEWAY_TOKEN '<token issued by gateway owner>'
+$env:CADDY_GATEWAY_TOKEN = '<token issued by gateway owner>'
+setx CADDY_GATEWAY_TOKEN '<token issued by gateway owner>'
 ```
+
+> **Already using `COHESITY_GATEWAY_TOKEN`?** It is still accepted. Run `& 'C:\caddy-gateway\Set-GatewayTokenAlias.ps1'` to migrate without retyping your token. See [GATEWAY-TOKEN-VARIABLE.md](GATEWAY-TOKEN-VARIABLE.md) for rollback.
 
 > **Why this matters:** GitHub Copilot reads environment variables at startup, so the token must be set before launching it. If GitHub Copilot is already running, completely quit the app and end any remaining background processes in **Task Manager** before continuing.
 

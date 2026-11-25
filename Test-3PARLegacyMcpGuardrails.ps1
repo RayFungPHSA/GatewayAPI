@@ -6,25 +6,36 @@
     never echoed.
 
 .EXAMPLE
-    $env:COHESITY_GATEWAY_ADMIN_TOKEN = '<admin token>'
-    $env:COHESITY_GATEWAY_READONLY_TOKEN = '<read-only token>'
+    $env:CADDY_GATEWAY_ADMIN_TOKEN = '<admin token>'
+    $env:CADDY_GATEWAY_READONLY_TOKEN = '<read-only token>'
     .\Test-3PARLegacyMcpGuardrails.ps1
 #>
 [CmdletBinding()]
 param(
     [string]$BaseUrl = 'http://10.53.19.120:8081',
-    [string]$AdminToken = $env:COHESITY_GATEWAY_ADMIN_TOKEN,
-    [string]$ReadOnlyToken = $env:COHESITY_GATEWAY_READONLY_TOKEN,
+    [string]$AdminToken = ($env:CADDY_GATEWAY_ADMIN_TOKEN, $env:COHESITY_GATEWAY_ADMIN_TOKEN | Where-Object { $_ } | Select-Object -First 1),
+    [string]$ReadOnlyToken = ($env:CADDY_GATEWAY_READONLY_TOKEN, $env:COHESITY_GATEWAY_READONLY_TOKEN | Where-Object { $_ } | Select-Object -First 1),
     [switch]$AllowUntrustedCertificate
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Legacy gateway-token environment variable aliases remain supported for rollback.
+if (-not $env:CADDY_GATEWAY_TOKEN -and $env:COHESITY_GATEWAY_TOKEN) {
+    $env:CADDY_GATEWAY_TOKEN = $env:COHESITY_GATEWAY_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_ADMIN_TOKEN -and $env:COHESITY_GATEWAY_ADMIN_TOKEN) {
+    $env:CADDY_GATEWAY_ADMIN_TOKEN = $env:COHESITY_GATEWAY_ADMIN_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_READONLY_TOKEN -and $env:COHESITY_GATEWAY_READONLY_TOKEN) {
+    $env:CADDY_GATEWAY_READONLY_TOKEN = $env:COHESITY_GATEWAY_READONLY_TOKEN
+}
 $BaseUrl = $BaseUrl.TrimEnd('/')
 $script:Passed = 0
 $script:Failed = 0
 
-if (-not $AdminToken) { throw 'Set -AdminToken or $env:COHESITY_GATEWAY_ADMIN_TOKEN.' }
-if (-not $ReadOnlyToken) { throw 'Set -ReadOnlyToken or $env:COHESITY_GATEWAY_READONLY_TOKEN.' }
+if (-not $AdminToken) { throw 'Set -AdminToken or $env:CADDY_GATEWAY_ADMIN_TOKEN.' }
+if (-not $ReadOnlyToken) { throw 'Set -ReadOnlyToken or $env:CADDY_GATEWAY_READONLY_TOKEN.' }
 
 if ($AllowUntrustedCertificate) {
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }

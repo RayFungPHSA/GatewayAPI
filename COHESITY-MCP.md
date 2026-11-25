@@ -206,7 +206,7 @@ API key.
 Set the token in a terminal you will use for OpenCode:
 
 ```powershell
-setx COHESITY_GATEWAY_TOKEN "<your gateway token>"
+setx CADDY_GATEWAY_TOKEN "<your gateway token>"
 ```
 
 Open a **new** terminal, then merge this into
@@ -222,7 +222,7 @@ Open a **new** terminal, then merge this into
         "url": "http://10.53.19.120:8081/cohesity/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       }
     }
@@ -233,7 +233,7 @@ Open a **new** terminal, then merge this into
 `oauth: false` is required. If you trust the local Caddy root certificate, use
 `https://10.53.19.120:8088/cohesity/mcp` instead.
 
-If `COHESITY_GATEWAY_TOKEN` was just set or changed, run
+If `CADDY_GATEWAY_TOKEN` was just set or changed, run
 `opencode service restart` so the client inherits the new environment.
 
 ### OpenCode 1.x
@@ -246,7 +246,7 @@ If `COHESITY_GATEWAY_TOKEN` was just set or changed, run
       "url": "http://10.53.19.120:8081/cohesity/mcp",
       "enabled": true,
       "headers": {
-        "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
       }
     }
   }
@@ -264,7 +264,7 @@ If `COHESITY_GATEWAY_TOKEN` was just set or changed, run
       "type": "http",
       "url": "http://10.53.19.120:8081/cohesity/mcp",
       "headers": {
-        "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}"
+        "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}"
       }
     }
   }
@@ -287,7 +287,7 @@ X-Gateway-Token: <your gateway token>
 Set the token for the current PowerShell session:
 
 ```powershell
-$env:COHESITY_GATEWAY_TOKEN = '<your gateway token>'
+$env:CADDY_GATEWAY_TOKEN = '<your gateway token>'
 ```
 
 Then run either test from the gateway share/copy:
@@ -313,8 +313,8 @@ Result: 6 passed, 0 failed
 Guardrail verification (uses one admin token and one read-only token):
 
 ```powershell
-$env:COHESITY_GATEWAY_ADMIN_TOKEN = '<ray.fung token>'
-$env:COHESITY_GATEWAY_READONLY_TOKEN = '<a read-only user token>'
+$env:CADDY_GATEWAY_ADMIN_TOKEN = '<ray.fung token>'
+$env:CADDY_GATEWAY_READONLY_TOKEN = '<a read-only user token>'
 C:\caddy-gateway\Test-CohesityMcpGuardrails.ps1
 ```
 
@@ -331,7 +331,7 @@ C:\caddy-gateway\Test-CohesityMcp.ps1 -BaseUrl https://10.53.19.120:8088 -AllowU
 One-line raw HTTP check:
 
 ```powershell
-curl.exe -sS -H "X-Gateway-Token: $env:COHESITY_GATEWAY_TOKEN" -H "Accept: application/json, text/event-stream" -H "Content-Type: application/json" --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' http://10.53.19.120:8081/cohesity/mcp
+curl.exe -sS -H "X-Gateway-Token: $env:CADDY_GATEWAY_TOKEN" -H "Accept: application/json, text/event-stream" -H "Content-Type: application/json" --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' http://10.53.19.120:8081/cohesity/mcp
 ```
 
 ---
@@ -384,7 +384,7 @@ required — `caddy reload` does not apply output-file changes.
 | Symptom | Cause / fix |
 |---|---|
 | HTTP 401 `A gateway token is required` | The MCP client is not sending `X-Gateway-Token` on every request. Check `oauth: false` / `enabled: true` and the `headers` block. |
-| HTTP 401 says the header has an unexpanded placeholder | The client sent literal `${COHESITY_GATEWAY_TOKEN}` or `{env:COHESITY_GATEWAY_TOKEN}`. In OpenCode use `{env:COHESITY_GATEWAY_TOKEN}`, then run `opencode service restart`. |
+| HTTP 401 says the header has an unexpanded placeholder | The client sent literal `${CADDY_GATEWAY_TOKEN}` or `{env:CADDY_GATEWAY_TOKEN}`. In OpenCode use `{env:CADDY_GATEWAY_TOKEN}`, then run `opencode service restart`. |
 | HTTP 403 `This gateway token is not authorized` | The token was revoked, replaced, or never added to the ACL. Check `Get-CohesityGatewayAcl.ps1`. |
 | Tool error says `admin-only` or `GET only` | Your token is `read-only`. Ask the gateway owner to use `Set-CohesityGatewayRole.ps1` if you need admin access. |
 | HTTP 400 about client-supplied API keys | A legacy `X-Cohesity-API-Key`, `X-Helios-API-Key`, or `Authorization: Bearer` header is still configured. Remove it; only send `X-Gateway-Token`. |

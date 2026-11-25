@@ -7,7 +7,7 @@
         "url": "http://10.53.19.120:8081/vsphere/mcp",
         "oauth": false,
         "headers": {
-          "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}"
+          "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}"
         }
       }
     }

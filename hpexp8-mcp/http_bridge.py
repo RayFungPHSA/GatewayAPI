@@ -256,7 +256,7 @@ class RequireGatewayTokenMiddleware:
                 await deny(
                     401,
                     "The X-Gateway-Token header contains an unexpanded placeholder. "
-                    "Use {env:COHESITY_GATEWAY_TOKEN} in OpenCode, or set the token "
+                    "Use {env:CADDY_GATEWAY_TOKEN} in OpenCode ({env:COHESITY_GATEWAY_TOKEN} is still accepted), or set the token "
                     "in the client environment and restart the client.",
                     "auth_denied",
                     "placeholder_token",

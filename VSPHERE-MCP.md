@@ -212,14 +212,14 @@ caddy reload --config C:\caddy-gateway\Caddyfile
 
 ## 4. Each user: configure your MCP client
 
-Reuse the same `COHESITY_GATEWAY_TOKEN` environment variable and add a
+Reuse the same `CADDY_GATEWAY_TOKEN` environment variable and add a
 `vsphere` server entry. Keep existing `cohesity`, `hpegreenlake`, and
 `lansweeper` entries.
 
 The consolidated prompt in
 **[GATEWAY-ONE-PROMPT-WITH-TOKEN.md](GATEWAY-ONE-PROMPT-WITH-TOKEN.md)** does
 this automatically by reading `/mcp/servers`. It assumes the user has already
-set `COHESITY_GATEWAY_TOKEN` locally and never handles the token value itself.
+set `CADDY_GATEWAY_TOKEN` locally and never handles the token value itself.
 
 ### OpenCode 2.x
 
@@ -232,7 +232,7 @@ set `COHESITY_GATEWAY_TOKEN` locally and never handles the token value itself.
         "type": "remote",
         "url": "http://10.53.19.120:8081/vsphere/mcp",
         "oauth": false,
-        "headers": { "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}" }
+        "headers": { "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}" }
       }
     }
   }
@@ -254,7 +254,7 @@ opencode service restart
       "type": "remote",
       "url": "http://10.53.19.120:8081/vsphere/mcp",
       "enabled": true,
-      "headers": { "X-Gateway-Token": "{env:COHESITY_GATEWAY_TOKEN}" }
+      "headers": { "X-Gateway-Token": "{env:CADDY_GATEWAY_TOKEN}" }
     }
   }
 }
@@ -268,7 +268,7 @@ opencode service restart
     "vsphere": {
       "type": "http",
       "url": "http://10.53.19.120:8081/vsphere/mcp",
-      "headers": { "X-Gateway-Token": "${COHESITY_GATEWAY_TOKEN}" }
+      "headers": { "X-Gateway-Token": "${CADDY_GATEWAY_TOKEN}" }
     }
   }
 }
@@ -316,7 +316,7 @@ returned to the client.
 Set the token for the current session:
 
 ```powershell
-$env:COHESITY_GATEWAY_TOKEN = '<your gateway token>'
+$env:CADDY_GATEWAY_TOKEN = '<your gateway token>'
 ```
 
 Then run:
@@ -331,8 +331,8 @@ Expected: 6 passed / 0 failed and 7 passed / 0 failed.
 Guardrail verification (uses one admin and one read-only token):
 
 ```powershell
-$env:COHESITY_GATEWAY_ADMIN_TOKEN = '<ray.fung token>'
-$env:COHESITY_GATEWAY_READONLY_TOKEN = '<a read-only user token>'
+$env:CADDY_GATEWAY_ADMIN_TOKEN = '<ray.fung token>'
+$env:CADDY_GATEWAY_READONLY_TOKEN = '<a read-only user token>'
 C:\caddy-gateway\Test-VsphereMcpGuardrails.ps1
 ```
 
@@ -348,7 +348,7 @@ C:\caddy-gateway\Test-VsphereMcp.ps1 -BaseUrl https://10.53.19.120:8088 -AllowUn
 One-line raw check:
 
 ```powershell
-curl.exe -sS -H "X-Gateway-Token: $env:COHESITY_GATEWAY_TOKEN" -H "Accept: application/json, text/event-stream" -H "Content-Type: application/json" --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' http://10.53.19.120:8081/vsphere/mcp
+curl.exe -sS -H "X-Gateway-Token: $env:CADDY_GATEWAY_TOKEN" -H "Accept: application/json, text/event-stream" -H "Content-Type: application/json" --data-binary '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' http://10.53.19.120:8081/vsphere/mcp
 ```
 
 ---
@@ -377,7 +377,7 @@ files.
 | Symptom | Cause / fix |
 |---|---|
 | HTTP 401 `A gateway token is required` | Client is not sending `X-Gateway-Token`. |
-| HTTP 401 unexpanded placeholder | Restart the client after setting `COHESITY_GATEWAY_TOKEN`. |
+| HTTP 401 unexpanded placeholder | Restart the client after setting `CADDY_GATEWAY_TOKEN`. |
 | HTTP 403 `not authorized for vSphere MCP` | Token is missing from the shared ACL or was rotated. |
 | HTTP 400 about client-supplied credentials | Remove vSphere/vCenter/Cohesity/HPE/Lansweeper key headers; send only `X-Gateway-Token`. |
 | Tool says `not available to read-only users` | The tool is not on the explicit allowlist. Ask the gateway owner. |

@@ -8,22 +8,33 @@
     structured failure for that server.
 
 .EXAMPLE
-    $env:COHESITY_GATEWAY_TOKEN = '<your token>'
+    $env:CADDY_GATEWAY_TOKEN = '<your token>'
     .\Test-HPEXP8Mcp.ps1
 #>
 [CmdletBinding()]
 param(
     [string]$BaseUrl = 'http://10.53.19.120:8081',
-    [string]$Token = $env:COHESITY_GATEWAY_TOKEN,
+    [string]$Token = ($env:CADDY_GATEWAY_TOKEN, $env:COHESITY_GATEWAY_TOKEN | Where-Object { $_ } | Select-Object -First 1),
     [switch]$AllowUntrustedCertificate
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Legacy gateway-token environment variable aliases remain supported for rollback.
+if (-not $env:CADDY_GATEWAY_TOKEN -and $env:COHESITY_GATEWAY_TOKEN) {
+    $env:CADDY_GATEWAY_TOKEN = $env:COHESITY_GATEWAY_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_ADMIN_TOKEN -and $env:COHESITY_GATEWAY_ADMIN_TOKEN) {
+    $env:CADDY_GATEWAY_ADMIN_TOKEN = $env:COHESITY_GATEWAY_ADMIN_TOKEN
+}
+if (-not $env:CADDY_GATEWAY_READONLY_TOKEN -and $env:COHESITY_GATEWAY_READONLY_TOKEN) {
+    $env:CADDY_GATEWAY_READONLY_TOKEN = $env:COHESITY_GATEWAY_READONLY_TOKEN
+}
 $BaseUrl = $BaseUrl.TrimEnd('/')
 $script:Passed = 0
 $script:Failed = 0
 
-if (-not $Token) { throw 'Set -Token or $env:COHESITY_GATEWAY_TOKEN.' }
+if (-not $Token) { throw 'Set -Token or $env:CADDY_GATEWAY_TOKEN.' }
 
 if ($AllowUntrustedCertificate) {
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
