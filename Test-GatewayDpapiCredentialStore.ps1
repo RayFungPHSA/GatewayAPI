@@ -133,7 +133,7 @@ try {
     $acl = Get-Content -LiteralPath $aclPath -Raw | ConvertFrom-Json
     $users = @($acl.users)
     $admins = @($users | Where-Object { $_.role -eq 'admin' } | ForEach-Object { $_.name })
-    Assert-Test 'Shared ACL has 14 named users' ($users.Count -eq 14) "count=$($users.Count)"
+    Assert-Test 'Shared ACL has 15 named users' ($users.Count -eq 15) "count=$($users.Count)"
     Assert-Test 'Only ray.fung@phsa.ca is admin' ($admins.Count -eq 1 -and $admins[0] -eq 'ray.fung@phsa.ca')
 } catch {
     Assert-Test 'Shared ACL state is valid' $false 'ACL could not be read'

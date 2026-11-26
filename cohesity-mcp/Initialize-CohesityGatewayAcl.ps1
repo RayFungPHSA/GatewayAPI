@@ -46,6 +46,7 @@ $users = @(
     [pscustomobject]@{ Name = 'dennis.xie@phsa.ca';        Role = 'read-only' }
     [pscustomobject]@{ Name = 'jim.xu@phsa.ca';            Role = 'read-only' }
     [pscustomobject]@{ Name = 'kai.yang@phsa.ca';          Role = 'read-only' }
+    [pscustomobject]@{ Name = 'gateway-test@phsa.ca';      Role = 'read-only' }
 )
 
 New-Item -ItemType Directory -Path $SecretsDir -Force | Out-Null

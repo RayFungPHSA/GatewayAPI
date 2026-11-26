@@ -5,7 +5,7 @@
 Retrieve **your own key** from Secret Server:
 
 - Folder: `Secrets > PHSA > TSStorage Services > PHSA > GatewayAPI`
-- Link: [GatewayAPI folder](https://phsa.secretservercloud.ca/app/#/secrets/view/folder/4058)
+- Link: [Secret Server GatewayAPI folder](https://phsa.secretservercloud.ca/app/#/secrets/view/folder/4058)
 
 Do not share your key or paste it into chat, tickets, documents, or source control.
 

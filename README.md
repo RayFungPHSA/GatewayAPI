@@ -55,11 +55,20 @@ Logs: `logs\service.log`, `logs\startup.log`, and `logs\shutdown.log`.
 
 ## Tests
 
+Run the full suite through the dedicated test runner. It uses Ray's admin token
+and the `gateway-test@phsa.ca` read-only token from the restricted distribution
+file, so no real user's key is attributed to automated tests.
+
 ```powershell
-.\Test-CaddyGateway.ps1
-.\Test-CaddyGateway-Curl.ps1
-.\Test-VSMonitoring-Curl.ps1
-.\Test-McpDiscovery.ps1             # needs $env:CADDY_GATEWAY_TOKEN
+.\Run-GatewayTests.ps1
+```
+
+Individual scripts still work, but require the canonical environment variables:
+
+```powershell
+$env:CADDY_GATEWAY_TOKEN = '<admin token>'
+$env:CADDY_GATEWAY_READONLY_TOKEN = '<gateway-test@phsa.ca token>'
+.\Test-McpDiscovery.ps1
 ```
 
 Cohesity MCP setup, DPAPI-protected server-side key, and per-user ACL instructions:
@@ -99,6 +108,9 @@ a DPAPI-protected record. No plaintext file was copied into this gateway:
 Vendor API coverage review for all seven MCPs, including read-only-user
 enforcement and the official documentation used:
 **[VENDOR-API-COVERAGE.md](VENDOR-API-COVERAGE.md)**
+
+Short team overview and example prompts:
+**[GATEWAY-TEAM-OVERVIEW.md](GATEWAY-TEAM-OVERVIEW.md)**
 
 User-facing setup guide to share with remote users:
 **[GATEWAY-USER-SETUP.md](GATEWAY-USER-SETUP.md)**
