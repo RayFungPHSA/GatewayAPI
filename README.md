@@ -107,7 +107,7 @@ Single consolidated setup/discovery prompt for new and returning users. The
 user sets `CADDY_GATEWAY_TOKEN` locally first; the AI harness never sees or
 handles the token value. It reads the MCP catalog at `/mcp/servers`, so it does
 not need editing when new MCP servers are added:
-**[GATEWAY-ONE-PROMPT-WITH-TOKEN.md](GATEWAY-ONE-PROMPT-WITH-TOKEN.md)**
+**[GATEWAY-ONE-PROMPT.md](GATEWAY-ONE-PROMPT.md)**
 
 Gateway token variable naming, migration, and rollback:
 **[GATEWAY-TOKEN-VARIABLE.md](GATEWAY-TOKEN-VARIABLE.md)**

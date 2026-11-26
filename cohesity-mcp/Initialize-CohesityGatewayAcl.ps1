@@ -33,7 +33,6 @@ if ((Test-Path -LiteralPath $AclFile) -and -not $Force) {
 # Ray.Fung@phsa.ca entry because it is the same person as the admin.
 $users = @(
     [pscustomobject]@{ Name = 'ray.fung@phsa.ca';          Role = 'admin' }
-    [pscustomobject]@{ Name = 'rajeev.atluri@phsa.ca';     Role = 'read-only' }
     [pscustomobject]@{ Name = 'chris.chong@phsa.ca';       Role = 'read-only' }
     [pscustomobject]@{ Name = 'nes.gatus@phsa.ca';         Role = 'read-only' }
     [pscustomobject]@{ Name = 'eran.hershko@phsa.ca';      Role = 'read-only' }

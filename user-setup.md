@@ -1,22 +1,39 @@
-# GitHub Copilot & Caddy API Gateway Setup
+# Caddy API Gateway setup — GitHub Copilot
 
-## 1. Set the Environment Variable
+## 1. Get your gateway API key
 
-Open a standard **PowerShell** terminal (do **not** run as Administrator) and run both commands to set the token for your current session and persist it for future sessions:
+Retrieve **your own key** from Secret Server:
+
+- Folder: `Secrets > PHSA > TSStorage Services > PHSA > GatewayAPI`
+- Link: [GatewayAPI folder](https://phsa.secretservercloud.ca/app/#/secrets/view/folder/4058)
+
+Do not share your key or paste it into chat, tickets, documents, or source control.
+
+## 2. Set the environment variable
+
+Open a normal **PowerShell** window (not Administrator) and run:
 
 ```powershell
-$env:CADDY_GATEWAY_TOKEN = '<token issued by gateway owner>'
-setx CADDY_GATEWAY_TOKEN '<token issued by gateway owner>'
+$env:CADDY_GATEWAY_TOKEN = '<key from Secret Server>'
+setx CADDY_GATEWAY_TOKEN '<key from Secret Server>'
 ```
 
-> **Already using `COHESITY_GATEWAY_TOKEN`?** It is still accepted. Run `& 'C:\caddy-gateway\Set-GatewayTokenAlias.ps1'` to migrate without retyping your token. See [GATEWAY-TOKEN-VARIABLE.md](GATEWAY-TOKEN-VARIABLE.md) for rollback.
+GitHub Copilot reads environment variables at startup. If Copilot is already running, quit it and its background processes in **Task Manager**, then restart it.
 
-> **Why this matters:** GitHub Copilot reads environment variables at startup, so the token must be set before launching it. If GitHub Copilot is already running, completely quit the app and end any remaining background processes in **Task Manager** before continuing.
+> Already using `COHESITY_GATEWAY_TOKEN`? It still works. To migrate without retyping the key, run `& 'C:\caddy-gateway\Set-GatewayTokenAlias.ps1'`, then restart Copilot. See [GATEWAY-TOKEN-VARIABLE.md](GATEWAY-TOKEN-VARIABLE.md) for rollback.
 
-> **Keep your key private:** This token is your personal credential. **Do not share it with anyone**, do not paste it into chat, email, tickets, or documents, and do not commit it to source control. Only use a token that was issued to you by the gateway owner. If you believe your token has been exposed, contact the gateway owner immediately so it can be revoked and replaced.
+## 3. Install and sign in to GitHub Copilot
 
-## 2. Install and Sign In to GitHub Copilot
+1. Install [GitHub Copilot](https://github.com/features/copilot).
+2. Sign in with your **PHSA corporate account**.
+3. If needed, sign up for the **GitHub Copilot Free** plan.
 
-1. Download and install **GitHub Copilot** from [github.com/features/copilot](https://github.com/features/copilot).
-2. Sign in using your **PHSA corporate account**.
-3. If you don't already have access, sign up for the **GitHub Copilot Free** plan.
+## 4. Paste the AI setup prompt
+
+Open [GATEWAY-ONE-PROMPT.md](GATEWAY-ONE-PROMPT.md), copy the full prompt, and paste it into a new GitHub Copilot chat.
+
+Do **not** paste your key into the chat. The prompt uses `CADDY_GATEWAY_TOKEN` from your environment.
+
+## 5. Start using Copilot
+
+Begin a natural-language chat with GitHub Copilot. The gateway MCP tools are now available through your assigned role.

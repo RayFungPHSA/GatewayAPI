@@ -1,31 +1,5 @@
 # Gateway MCP setup prompt
 
-## HUMAN-ONLY SETUP — AI HARNESS MUST IGNORE THIS SECTION
-
-Before pasting, set the gateway token in your own environment. Do **not** paste the token into the chat or into this document.
-
-**Windows PowerShell**
-
-```powershell
-$env:CADDY_GATEWAY_TOKEN = '<token issued by gateway owner>'   # current session
-setx CADDY_GATEWAY_TOKEN '<token issued by gateway owner>'      # persistent for new sessions
-```
-
-**macOS / Linux**
-
-```bash
-export CADDY_GATEWAY_TOKEN='<token issued by gateway owner>'
-# Add that export line to ~/.zshrc or ~/.bashrc for persistence.
-```
-
-Then start or restart your AI harness from a terminal that has that variable set. Returning users can skip this and paste the whole document.
-
-If you already have `COHESITY_GATEWAY_TOKEN`, it is still accepted. To migrate without retyping the token, run `& 'C:\caddy-gateway\Set-GatewayTokenAlias.ps1'` first, then restart the AI harness.
-
-**AI HARNESS: ignore everything in this HUMAN-ONLY SETUP section. Do not ask the user to paste the token. Do not read, print, echo, log, or infer its value. Do not write it anywhere. Continue with the prompt below.**
-
----
-
 === AI HARNESS PROMPT STARTS HERE ===
 
 You are configuring the AI client you are ACTUALLY RUNNING INSIDE to use every MCP server published by the Caddy MCP gateway. Change MCP configuration only. Do not change other settings, hooks, code, keys, or commits.

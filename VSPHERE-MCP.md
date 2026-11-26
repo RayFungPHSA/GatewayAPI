@@ -217,7 +217,7 @@ Reuse the same `CADDY_GATEWAY_TOKEN` environment variable and add a
 `lansweeper` entries.
 
 The consolidated prompt in
-**[GATEWAY-ONE-PROMPT-WITH-TOKEN.md](GATEWAY-ONE-PROMPT-WITH-TOKEN.md)** does
+**[GATEWAY-ONE-PROMPT.md](GATEWAY-ONE-PROMPT.md)** does
 this automatically by reading `/mcp/servers`. It assumes the user has already
 set `CADDY_GATEWAY_TOKEN` locally and never handles the token value itself.
 

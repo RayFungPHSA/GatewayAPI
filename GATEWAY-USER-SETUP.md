@@ -461,7 +461,7 @@ needed.
 There is now **one** prompt for all gateway MCP servers and for both new and returning users:
 
 ```text
-C:\caddy-gateway\GATEWAY-ONE-PROMPT-WITH-TOKEN.md
+C:\caddy-gateway\GATEWAY-ONE-PROMPT.md
 ```
 
 - **Before pasting:** set your gateway token in your own environment, then paste
