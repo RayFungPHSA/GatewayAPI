@@ -250,7 +250,10 @@ Web dashboard (install once with `python -m pip install streamlit`):
 .\Start-GatewayUsageDashboard.ps1
 ```
 
-Then open `http://127.0.0.1:8501`. It has date, endpoint and user filters,
+Then open `http://127.0.0.1:8501`. The main page has date, endpoint and user filters,
+and the **Live Status** page shows token-free health checks for the gateway,
+all seven MCP health endpoints (via gateway and loopback), VS Monitoring/httpbin/todos routes,
+CaddyGateway service, usage snapshot task, and Prometheus metrics.
 hourly/daily MCP charts (hourly by default via **Chart granularity**), and
 per-user/per-MCP tables. Times use `America/Vancouver`
 (permanent BC Pacific Time, UTC-07:00); tick **Show UTC instead** in the

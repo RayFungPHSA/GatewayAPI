@@ -43,7 +43,8 @@ try {
         --server.address $Address `
         --server.port $Port `
         --server.headless true `
-        --browser.gatherUsageStats false
+        --browser.gatherUsageStats false `
+        --client.toolbarMode minimal
 }
 finally {
     if ($null -eq $previousEncoding) {
