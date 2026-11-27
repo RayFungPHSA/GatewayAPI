@@ -1,8 +1,9 @@
 """Read-only Brocade SANnav REST API client for the Brocade MCP.
 
 All operational requests are HTTP GETs against the fixed, server-configured
-SANnav endpoint. The only POST is the internal login call, which is never
-exposed as an MCP tool.
+SANnav endpoint. Authentication uses documented session-less HTTP Basic auth on
+the official ``/external-api/v1`` API; there is no login POST and no session to
+refresh.
 
 SANnav uses self-signed certificates, so TLS verification is disabled only for
 the configured HTTPS endpoint. Client-supplied URLs and credentials are never
@@ -18,18 +19,14 @@ import re
 import time
 from collections import Counter
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import parse_qsl, urlencode, urlsplit
 
 import httpx
 
-LOGIN_PATH = "/auth/login"
-SESSION_LIFETIME_SECONDS = 5 * 60
+API_ROOT = "/external-api/v1"
+PAGE_SIZE = 5000
+MAX_PAGES = 100
 TIMEOUT_SECONDS = 120
-
-
-def enc(value: Any) -> str:
-    """URL-encode a path segment value."""
-    return quote(str(value), safe="")
 
 
 def contains(value: Any, needle: str) -> bool:
@@ -42,14 +39,12 @@ class SanNavClient:
         self.password = credentials["password"]
         self.server = credentials["server"]
         self.base_url = self.server["url"]
-        self._session_id: str | None = None
-        self._expires_at = 0.0
+        self._auth = httpx.BasicAuth(self.username, self.password)
         self._client = httpx.Client(
             timeout=httpx.Timeout(TIMEOUT_SECONDS),
             headers={
                 "accept": "application/json",
                 "content-type": "application/json",
-                "initiator": "SANNAV_UI",
             },
             follow_redirects=False,
             verify=False,
@@ -60,43 +55,29 @@ class SanNavClient:
 
     def redact(self, text: str) -> str:
         result = str(text)
-        for value in (self.password, self._session_id):
-            if value:
-                result = result.replace(value, "[REDACTED]")
+        if self.password:
+            result = result.replace(self.password, "[REDACTED]")
         result = re.sub(r'(\b(?:sessionId|sessionID|auth)\b\s*[:=]\s*)(\S+)', r"\1[REDACTED]", result, flags=re.IGNORECASE)
         result = re.sub(r'(\b(?:password|username)\b\s*[:=]\s*)(\S+)', r"\1[REDACTED]", result, flags=re.IGNORECASE)
         result = re.sub(r"Basic\s+\S+", "Basic [REDACTED]", result, flags=re.IGNORECASE)
         return result[:400]
 
-    def _login(self, force: bool = False) -> str:
-        if not force and self._session_id and time.time() < self._expires_at:
-            return self._session_id
+    @staticmethod
+    def _validate_path(path: str) -> str:
+        parts = urlsplit(path)
+        if (
+            parts.scheme
+            or parts.netloc
+            or not parts.path.startswith(API_ROOT + "/")
+            or ".." in parts.path
+            or "//" in parts.path
+        ):
+            raise ValueError("Only allowlisted SANnav external API GET paths are supported.")
+        return parts.path
 
-        basic = httpx.BasicAuth(self.username, self.password)
-        response = self._client.post(self.base_url + LOGIN_PATH, auth=basic)
-        if not response.is_success:
-            raise RuntimeError(f"SANnav login failed (HTTP {response.status_code}).")
-        try:
-            session_id = response.json().get("sessionId")
-        except Exception:
-            session_id = None
-        if not isinstance(session_id, str) or not session_id:
-            raise RuntimeError("SANnav login did not return a session ID.")
-        self._session_id = session_id
-        self._expires_at = time.time() + SESSION_LIFETIME_SECONDS - 30
-        return session_id
-
-    def _get(self, path: str, retry: bool = True) -> Any:
-        if not path.startswith("/") or "//" in path:
-            raise ValueError("Only allowlisted SANnav GET paths are supported.")
-        session_id = self._login()
-        response = self._client.get(
-            self.base_url + path,
-            headers={"Authorization": session_id},
-        )
-        if retry and response.status_code in (401, 403):
-            self._login(force=True)
-            return self._get(path, retry=False)
+    def _get(self, path: str) -> Any:
+        self._validate_path(path)
+        response = self._client.get(self.base_url + path, auth=self._auth)
         if not response.is_success:
             raise RuntimeError(f"SANnav GET {path} failed (HTTP {response.status_code}).")
         text = response.text
@@ -107,9 +88,39 @@ class SanNavClient:
         except Exception:
             return text[:10000]
 
+    def _paged_rows(self, path: str, key: str) -> list[dict[str, Any]]:
+        """Fetch every page of a documented SANnav collection endpoint."""
+        parts = urlsplit(path)
+        params = dict(parse_qsl(parts.query, keep_blank_values=True))
+        params.setdefault("numOfRecords", str(PAGE_SIZE))
+        start_index = int(params.get("startIndex") or 0)
+        rows: list[dict[str, Any]] = []
+
+        for _ in range(MAX_PAGES):
+            page_params = dict(params)
+            page_params["startIndex"] = str(start_index)
+            page_path = parts.path + "?" + urlencode(page_params)
+            data = self._get(page_path)
+            rows.extend(self._rows(data, key))
+            if not isinstance(data, dict):
+                break
+            if not data.get("numOfEntitiesNotReturned"):
+                break
+            try:
+                next_index = int(data.get("startIndexToUse"))
+            except (TypeError, ValueError):
+                break
+            if next_index <= start_index:
+                break
+            start_index = next_index
+        return rows
+
     def connection_status(self) -> dict[str, Any]:
         try:
-            response = self._client.get(self.base_url + "/", follow_redirects=False)
+            response = self._client.get(
+                self.base_url + API_ROOT + "/about/",
+                auth=self._auth,
+            )
             reachable = response.is_success or response.status_code in (301, 302, 401, 403, 405)
             status: dict[str, Any] = {
                 "reachable": reachable,
@@ -118,6 +129,11 @@ class SanNavClient:
                 "port": self.server["port"],
                 "transportEncrypted": True,
             }
+            if response.is_success:
+                try:
+                    status["apiVersion"] = response.json().get("version")
+                except Exception:
+                    pass
         except Exception as exc:
             status = {
                 "reachable": False,
@@ -154,41 +170,120 @@ class SanNavClient:
                 return [row for row in rows if isinstance(row, dict)]
         return []
 
+    @staticmethod
+    def _port_name(row: dict[str, Any]) -> str:
+        for key in ("fdmiHostName", "autoEnclosureName", "deviceEnclosureName", "zoneAlias", "wwn"):
+            value = str(row.get(key) or "").strip()
+            if value:
+                return value
+        return ""
+
+    @staticmethod
+    def _normalize_port(row: dict[str, Any], kind: str) -> dict[str, Any]:
+        normalized = dict(row)
+        name = SanNavClient._port_name(row)
+        normalized["name"] = row.get("switchPortName") or row.get("wwn") or row.get("id")
+        normalized["hostName"] = name if kind == "host" else row.get("fdmiHostName")
+        normalized["storageName"] = name if kind == "storage" else row.get("fdmiHostName")
+        normalized["wwn"] = row.get("wwn") or row.get("physicalPortWwn")
+        normalized["connectedSwitchName"] = row.get("switchName")
+        normalized["connectedSwitchPortName"] = row.get("switchPortName")
+        normalized["connectedPortNumber"] = row.get("portNumber")
+        normalized["portRole"] = row.get("portRole")
+        normalized["activeFC4Types"] = row.get("activeFC4Types") or row.get("type")
+        normalized["health"] = row.get("health")
+        normalized["status"] = row.get("status")
+        return normalized
+
+    def _entities_from_ports(self, rows: list[dict[str, Any]], kind: str) -> list[dict[str, Any]]:
+        name_key = "hostName" if kind == "host" else "storageName"
+        grouped: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            name = str(row.get(name_key) or "").strip()
+            if not name:
+                continue
+            entry = grouped.setdefault(
+                name,
+                {
+                    "id": row.get("deviceNodeWwn") or row.get("wwn"),
+                    "name": name,
+                    "health": row.get("health"),
+                    "type": kind,
+                    "portCount": 0,
+                    "guid": row.get("deviceNodeWwn") or row.get("wwn"),
+                    "fabrics": set(),
+                },
+            )
+            entry["portCount"] += 1
+            fabric = row.get("fabricName")
+            if fabric:
+                entry["fabrics"].add(str(fabric))
+        return [
+            {
+                "id": entry["id"],
+                "name": entry["name"],
+                "health": entry["health"],
+                "type": entry["type"],
+                "portCount": entry["portCount"],
+                "guid": entry["guid"],
+                "fabrics": sorted(entry["fabrics"]),
+            }
+            for entry in grouped.values()
+        ]
+
     # -- Raw read-only endpoints -------------------------------------------------
 
     def _fabrics(self) -> list[dict[str, Any]]:
-        return self._rows(self._get("/inventory/fabrics"))
+        return self._paged_rows(API_ROOT + "/inventory/fabrics/?basicOnly=0", "fabrics")
 
     def _switches(self) -> list[dict[str, Any]]:
-        return self._rows(self._get("/firmwaremanagement/switches"), "switchObject")
+        switches = self._paged_rows(API_ROOT + "/inventory/switches/?basicOnly=0", "switches")
+        for switch in switches:
+            if not switch.get("fabrics"):
+                fabric = switch.get("fabricName")
+                switch["fabrics"] = [fabric] if fabric else []
+            switch["switchName"] = switch.get("name") or switch.get("physicalSwitchName")
+            switch["model"] = switch.get("manufacturerModel") or switch.get("modelNumber")
+            switch["switchWwn"] = switch.get("physicalSwitchWwn") or switch.get("wwn")
+        return switches
 
-    def _hosts(self) -> list[dict[str, Any]]:
-        return self._rows(self._get("/inventory/hosts"))
-
-    def _storages(self) -> list[dict[str, Any]]:
-        return self._rows(self._get("/inventory/storages"))
+    def _device_ports(self, kind: str) -> list[dict[str, Any]]:
+        rows = self._paged_rows(
+            API_ROOT + f"/inventory/deviceports/?type={kind}&basicOnly=0",
+            "DevicePorts",
+        )
+        return [self._normalize_port(row, kind) for row in rows]
 
     def _host_ports(self) -> list[dict[str, Any]]:
-        return self._rows(self._get("/inventory/fabrics/All/hosts/All/ports"))
+        return self._device_ports("host")
 
     def _storage_ports(self) -> list[dict[str, Any]]:
-        return self._rows(self._get("/inventory/fabrics/ALL/storages/All/ports"))
+        return self._device_ports("storage")
+
+    def _hosts(self) -> list[dict[str, Any]]:
+        return self._entities_from_ports(self._host_ports(), "host")
+
+    def _storages(self) -> list[dict[str, Any]]:
+        return self._entities_from_ports(self._storage_ports(), "storage")
 
     # -- Named tools -------------------------------------------------------------
 
     def auth_status(self, refresh: bool = False) -> dict[str, Any]:
-        self._login(force=refresh)
+        del refresh
+        response = self._client.get(self.base_url + API_ROOT + "/about/", auth=self._auth)
+        if not response.is_success:
+            raise RuntimeError(f"SANnav authentication check failed (HTTP {response.status_code}).")
         return self.wrap(
             {
                 "authenticated": True,
-                "privilegesAvailable": True,
+                "authMode": "session-less basic",
                 "transportEncrypted": True,
             }
         )
 
     def list_fabrics(self) -> dict[str, Any]:
         def summary(f: dict[str, Any]) -> dict[str, Any]:
-            last = f.get("lastDiscovery")
+            last = f.get("lastFabricChanged") or f.get("lastDiscovery")
             try:
                 last = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(int(last) / 1000)) if last else None
             except (TypeError, ValueError):
@@ -198,12 +293,12 @@ class SanNavClient:
                 "name": f.get("name"),
                 "health": f.get("health"),
                 "status": f.get("status"),
-                "seedSwitchIP": f.get("seedSwitchIP"),
+                "seedSwitchIP": f.get("seedSwitchIpAddress") or f.get("seedSwitchIP"),
                 "seedSwitchName": f.get("seedSwitchName"),
                 "firmwareVersion": f.get("seedSwitchFirmwareVersion"),
                 "switchCount": f.get("switchCount"),
                 "agCount": f.get("agCount"),
-                "activeZone": f.get("activeZone"),
+                "activeZone": f.get("activeZonesetName") or f.get("activeZone"),
                 "lastDiscovery": last,
             }
 
@@ -223,7 +318,7 @@ class SanNavClient:
                 "wwn": s.get("switchWwn"),
                 "fabrics": s.get("fabrics"),
                 "callHomeEnabled": s.get("callHomeEnabled"),
-                "truFOSStatus": s.get("truFOSStatus"),
+                "truFOSStatus": s.get("truFosStatus"),
             }
             for s in switches
         ]
@@ -231,6 +326,8 @@ class SanNavClient:
 
     def list_hosts(self, fabric: str = "", health: str = "", search: str = "") -> dict[str, Any]:
         hosts = self._hosts()
+        if fabric:
+            hosts = [h for h in hosts if any(contains(f, fabric) for f in (h.get("fabrics") or []))]
         if search:
             hosts = [h for h in hosts if contains(h.get("name"), search)]
         if health:
@@ -358,8 +455,10 @@ class SanNavClient:
     def get_overview(self) -> dict[str, Any]:
         fabrics = self._fabrics()
         switches = self._switches()
-        hosts = self._hosts()
-        storages = self._storages()
+        host_ports = self._host_ports()
+        storage_ports = self._storage_ports()
+        hosts = self._entities_from_ports(host_ports, "host")
+        storages = self._entities_from_ports(storage_ports, "storage")
         return self.wrap(
             {
                 "fabrics": {"total": len(fabrics), "health": dict(Counter(str(f.get("health") or "Unknown") for f in fabrics))},
@@ -369,7 +468,7 @@ class SanNavClient:
                 },
                 "hosts": {"total": len(hosts), "health": dict(Counter(str(h.get("health") or "Unknown") for h in hosts))},
                 "storages": {"total": len(storages), "health": dict(Counter(str(s.get("health") or "Unknown") for s in storages))},
-                "totalHostPorts": len(self._host_ports()),
-                "totalStoragePorts": len(self._storage_ports()),
+                "totalHostPorts": len(host_ports),
+                "totalStoragePorts": len(storage_ports),
             }
         )

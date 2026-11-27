@@ -26,7 +26,7 @@ Review date: 2026-11-24.
 | vSphere | Broadcom vSphere Automation API 8.0.3 / latest | 20 / 20 | All tools read-only; same allowlist for both roles |
 | 3PARLegacy | HPE 3PAR StoreServ WSAPI REST API (`/api/v1`) | 10 / 10 | GET-only named tools; all annotated read-only |
 | HPEXP8 | HPE XP Performance Advisor 8.5 REST API (`/pa/api`) | 10 / 10 | GET-only named tools; all annotated read-only |
-| Brocade | Brocade SANnav Management Portal (2.4.0a) | 9 / 9 callable | 4 documented REST equivalents, 3 derived, 2 internal-only; all annotated read-only |
+| Brocade | Brocade SANnav Management Portal (3.0.1x) | 9 / 9 callable | 4 documented REST equivalents, 5 derived; all annotated read-only |
 
 Counts are from the live gateway's `tools/list` result. In every MCP the
 read-only role receives no tool that the admin role does not also receive.
@@ -268,49 +268,56 @@ only; this is reported by `transportEncrypted: false` in auth status.
 ### Official documentation and live verification
 
 - Built from the project-local `CStorageDashboard\mcp-configs\Brocade` server.
-- The live appliance reports `2.4.0a` from `GET /external-api/v1/about/`, so the
-  applicable guide is the
-  [SANnav 2.4.0x REST API and Northbound Streaming Reference Manual](https://techdocs.broadcom.com/us/en/fibre-channel-networking/sannav/management-portal-rest-api/2-4-0x.html)
-  ([PDF](https://techdocs.broadcom.com/content/dam/broadcom/techdocs/us/en/pdf/fc-networking/software-sannav/sannav-240x-restapi.pdf)).
-- The bridge authenticates with the source server's internal UI
-  `POST /auth/login` (`initiator: SANNAV_UI`) and reuses its returned `sessionId`.
-  The official guide documents `POST /external-api/v1/login/`; the migration to
-  that endpoint has not been done.
+- The upgraded appliance reports `3.0.0.1` (build 11) from
+  `GET /external-api/v1/about/`, so it is treated as the 3.0.1x API family:
+  [SANnav 3.0.1x Management Portal REST API Reference](https://techdocs.broadcom.com/us/en/fibre-channel-networking/sannav/management-portal-rest-api/3-0-1x.html)
+  and [release notes](https://docs.broadcom.com/doc/sannav-management-portal-v3.0.1-release-notes).
+- The bridge uses documented session-less HTTP Basic auth on
+  `/external-api/v1`. There is no login POST, no session ID, and no internal UI
+  endpoint. The legacy `POST /auth/login` session now returns HTTP 401 on
+  external API calls.
 - Live authenticated calls confirmed `https://10.254.22.251:443`: 12 fabrics,
-  26 firmware-management switches, 556 hosts, 29 storages, 1621 host ports, and
-  436 storage ports. `/inventory/connections` returns 403 for this read-only
-  account and is not exposed as a tool.
+  38 switches, 1647 host ports, and 436 storage ports. Hosts (1024) and storages
+  (50) are derived from device-port names. `/inventory/connections` returns 403
+  for this read-only account and is not exposed as a tool.
 
 ### Official API coverage of the nine tools
 
-| Tool | Official 2.4.0x REST API status |
+| Tool | Official 3.0.1x REST API status |
 |---|---|
-| `list-fabrics` | Documented equivalent: `GET /external-api/v1/inventory/fabrics/` |
-| `list-switches` | Documented equivalent: `GET /external-api/v1/inventory/switches/` (includes `firmwareVersion`) |
-| `list-hosts` | **Not documented**; bridge uses internal `/inventory/hosts` |
-| `list-host-ports` | Documented equivalent: `GET /external-api/v1/inventory/deviceports/?type=host` |
-| `list-storages` | **Not documented**; bridge uses internal `/inventory/storages` |
-| `list-storage-ports` | Documented equivalent: `GET /external-api/v1/inventory/deviceports/?type=storage` |
-| `list-zones` | No named zones GET; derivable from `deviceports` `activeZones`/`zoneAlias`. FOS proxy zone GETs require admin privilege and returned 403 for this account. |
-| `get-connectivity-map` | No named endpoint; derivable from `deviceports`/`switchports` |
-| `get-overview` | No read-only overview endpoint; `healthsummarydetails` is a POST requiring read/write permission. Currently derived from internal counts. |
+| `list-fabrics` | Documented: `GET /external-api/v1/inventory/fabrics/` |
+| `list-switches` | Documented: `GET /external-api/v1/inventory/switches/` (includes `firmwareVersion`) |
+| `list-hosts` | Derived from documented `GET /external-api/v1/inventory/deviceports/?type=host`; no public hosts collection |
+| `list-host-ports` | Documented: `GET /external-api/v1/inventory/deviceports/?type=host` |
+| `list-storages` | Derived from documented `GET /external-api/v1/inventory/deviceports/?type=storage`; no public storages collection |
+| `list-storage-ports` | Documented: `GET /external-api/v1/inventory/deviceports/?type=storage` |
+| `list-zones` | No named zones GET; derived from `deviceports` `activeZones`/`zoneAlias`. FOS proxy zone GETs require admin privilege and returned 403 for this account. |
+| `get-connectivity-map` | No named endpoint; derived from host and storage `deviceports` |
+| `get-overview` | No read-only overview endpoint; derived from documented fabrics, switches, and device ports |
 
-**Conclusion:** all nine tools are callable with the read-only account, but only
-four have direct documented external REST equivalents, three are derived from
-documented data, and two rely on undocumented internal UI endpoints. This MCP
-should not be described as a fully public-API integration until those four
-internal paths are migrated and the derived tools are re-based on the official
-endpoints.
+**Conclusion:** all nine tools are callable with the read-only account, four
+have direct documented external REST equivalents, five are derived from
+documented data, and none rely on undocumented internal UI endpoints after the
+3.0.1 migration.
+
+SANnav 3.0.1 added four REST interfaces. The read-only candidates are
+`GET /external-api/v1/license/active/` (HTTP 403 for this account) and
+`GET /external-api/v1/zoning/snapshots` (HTTP 405 `Invalid payload` even with
+the documented `fabricName` parameter). The mutating
+`PUT /external-api/v1/usermgmt/users/credentials` and
+`PUT /external-api/v1/inventory/chassis/credentials` endpoints change passwords
+and are intentionally not exposed through MCP.
 
 ### Coverage and changes
 
 Nine named read-only tools are registered for both roles, matching the source
-server's tool surface. The only POST is the internal login request, never
-exposed as an MCP tool. Client-supplied SANnav credentials and Basic auth
-headers are rejected. SANnav uses a self-signed certificate, so TLS verification
-is disabled only for the single configured HTTPS endpoint. The credential was
-imported locally from the old plaintext `.env` into a DPAPI-protected record; no
-plaintext credential file was copied into the gateway.
+server's tool surface. All upstream requests are documented GETs with
+session-less Basic auth; no POST or session state is used. Client-supplied
+SANnav credentials and Basic auth headers are rejected. SANnav uses a
+self-signed certificate, so TLS verification is disabled only for the single
+configured HTTPS endpoint. The credential was imported locally from the old
+plaintext `.env` into a DPAPI-protected record; no plaintext credential file was
+copied into the gateway.
 
 ## Read-only user verification
 

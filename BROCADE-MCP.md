@@ -3,9 +3,9 @@
 `Brocade` is a read-only MCP for the Brocade SANnav Management Portal. It was
 brought over from `CStorageDashboard\mcp-configs\Brocade`, converted from a stdio
 server with a plaintext `.env` into a gateway HTTP bridge that uses the shared
-gateway-token ACL. Its nine tools are live against SANnav 2.4.0a, but they are
-**not all documented external REST APIs**; see
-[Official API coverage](#official-api-coverage).
+gateway-token ACL. Its nine tools are live against the upgraded SANnav 3.0.1x
+API and are backed only by documented external REST calls or data derived from
+them; see [Official API coverage](#official-api-coverage).
 
 ## Endpoint
 
@@ -84,77 +84,79 @@ verifies it along with the other six bridges.
 All nine tools are read-only (`readOnlyHint: true`, `destructiveHint: false`,
 `idempotentHint: true`):
 
-| Tool | Path used by this bridge | Documented 2.4.0x external API | Purpose |
-|---|---|---|---|
-| `list-fabrics` | `/inventory/fabrics` | `GET /external-api/v1/inventory/fabrics/` | Fabrics with health and inventory counts |
-| `list-switches` | `/firmwaremanagement/switches` | `GET /external-api/v1/inventory/switches/` | Switches with model, firmware, IP, fabric |
-| `list-hosts` | `/inventory/hosts` | None | Hosts connected to the SAN |
-| `list-host-ports` | `/inventory/fabrics/All/hosts/All/ports` | `GET /external-api/v1/inventory/deviceports/?type=host` | Host-side FC ports and connectivity |
-| `list-storages` | `/inventory/storages` | None | Storage arrays |
-| `list-storage-ports` | `/inventory/fabrics/ALL/storages/All/ports` | `GET /external-api/v1/inventory/deviceports/?type=storage` | Storage-side FC target ports |
-| `list-zones` | Aggregated from host/storage ports | Derived from `deviceports` `activeZones`/`zoneAlias`; no named zones GET | Active zones and members |
-| `get-connectivity-map` | Aggregated from host/storage ports | Derived from `deviceports`/`switchports`; no named endpoint | Host-to-storage paths through switches |
-| `get-overview` | Aggregated from the above | Derived from fabrics/switches/ports; `healthsummarydetails` requires read/write | Counts and health summary |
+| Tool | Official SANnav REST source used by this bridge | Purpose |
+|---|---|---|
+| `list-fabrics` | `GET /external-api/v1/inventory/fabrics/` | Fabrics with health and inventory counts |
+| `list-switches` | `GET /external-api/v1/inventory/switches/` | Switches with model, firmware, IP, fabric |
+| `list-hosts` | Derived from `GET /external-api/v1/inventory/deviceports/?type=host` | Hosts connected to the SAN |
+| `list-host-ports` | `GET /external-api/v1/inventory/deviceports/?type=host` | Host-side FC ports and connectivity |
+| `list-storages` | Derived from `GET /external-api/v1/inventory/deviceports/?type=storage` | Storage arrays |
+| `list-storage-ports` | `GET /external-api/v1/inventory/deviceports/?type=storage` | Storage-side FC target ports |
+| `list-zones` | Derived from `deviceports` `activeZones`/`zoneAlias` | Active zones and members |
+| `get-connectivity-map` | Derived from host and storage `deviceports` | Host-to-storage paths through switches |
+| `get-overview` | Derived from fabrics, switches, and device ports | Counts and health summary |
 
 Filters match the original server: `fabric`, `health`, `search`, `host`,
 `storage`, and `portRole` where applicable. `get-overview` is deliberately
 bounded to counts and health distributions, so it does not return large raw
 inventories.
 
-The only POST is the internal UI login `POST /auth/login` with Basic auth and
-`initiator: SANNAV_UI`. It returns a `sessionId` used as the `Authorization`
-header on subsequent GETs and refreshed after five minutes. That POST is not
-exposed as an MCP tool. The official guide documents
-`POST /external-api/v1/login/` instead; the bridge currently inherits the
-source server's internal login and has not been migrated to the external login.
+Authentication uses documented session-less HTTP Basic auth on the
+`/external-api/v1` API. There is no login POST, no `sessionId`, and no internal
+UI endpoint. Collection calls use `startIndex`/`numOfRecords` pagination with a
+5000-record page size. Client-supplied SANnav credentials are still rejected by
+the gateway bridge.
 
 `/inventory/connections` returns HTTP 403 for the read-only service account, so
 it is not used by any tool.
 
 ## Official API coverage
 
-Checked against the official Broadcom guide for the live appliance version
-(SANnav **2.4.0a** reported by `GET /external-api/v1/about/`):
+Checked against the official Broadcom guides for the upgraded appliance:
 
-- [SANnav 2.4.0x REST API and Northbound Streaming Reference Manual](https://techdocs.broadcom.com/us/en/fibre-channel-networking/sannav/management-portal-rest-api/2-4-0x.html)
-- [PDF](https://techdocs.broadcom.com/content/dam/broadcom/techdocs/us/en/pdf/fc-networking/software-sannav/sannav-240x-restapi.pdf)
-- [Current REST API documentation index](https://docs.broadcom.com/docs/management-portal-rest-api)
+- [SANnav 3.0.1x Management Portal REST API Reference](https://techdocs.broadcom.com/us/en/fibre-channel-networking/sannav/management-portal-rest-api/3-0-1x.html)
+- [SANnav Management Portal v3.0.1 Release Notes](https://docs.broadcom.com/doc/sannav-management-portal-v3.0.1-release-notes)
+- [About SANnav](https://techdocs.broadcom.com/us/en/fibre-channel-networking/sannav/management-portal-rest-api/3-0-1x/Resources-REST-API/about-sannav-module.html)
 
-The 2.4.0x guide documents GET endpoints for fabrics, switches, switch ports,
+The live appliance currently reports version `3.0.0.1` (build 11) from
+`GET /external-api/v1/about/`, so it is treated as the 3.0.1x API family. The
+official guide documents GET endpoints for fabrics, switches, switch ports,
 device ports (with `type=host` and `type=storage` filters), discovery, FCR
-topology, chassis, enclosures, about, and password policy. It also documents
+topology, chassis, enclosures, about, and license details. It also documents
 `POST /external-api/v1/fos/rest/` as a read-only proxy for two Fabric OS zone
 GETs, but that call requires the **Element Manager - Product Administration**
-privilege. A live probe with the read-only service account returned HTTP 403
-with that exact requirement. `POST /external-api/v1/healthsummary/healthsummarydetails/`
-likewise requires Health Score Configuration read/write permission, so it is not
-available to this read-only account.
+privilege. `POST /external-api/v1/healthsummary/healthsummarydetails/`
+likewise requires Health Score Configuration read/write permission, so neither
+is available to this read-only account.
 
 Result for the nine registered tools:
 
 - **4 have direct documented equivalents**: `list-fabrics`, `list-switches`,
   `list-host-ports`, `list-storage-ports`.
-- **3 can be derived from documented data but have no named endpoint**:
-  `list-zones`, `get-connectivity-map`, `get-overview`.
-- **2 have no documented external API equivalent**: `list-hosts` and
-  `list-storages`. The bridge uses the internal UI paths `/inventory/hosts` and
-  `/inventory/storages`, which work today but are not part of the published
-  SANnav REST API and may change without notice.
+- **5 are derived from documented data**: `list-hosts`, `list-storages`,
+  `list-zones`, `get-connectivity-map`, `get-overview`. There is no public
+  hosts/storages collection endpoint, so hosts and storages are grouped from
+  device ports.
+- **0 rely on undocumented internal UI endpoints** after this migration.
 
-All nine tools were confirmed to return live data with the read-only account,
-but “available” here means the appliance's internal UI endpoints are callable,
-not that every tool is a documented public SANnav REST API. Migrating to the
-official endpoints should be done before treating this MCP as a supported
-public-API integration.
+SANnav 3.0.1 added four REST interfaces. The two GETs are not exposed here:
+`GET /external-api/v1/license/active/` returns HTTP 403 for this account, and
+`GET /external-api/v1/zoning/snapshots` returns HTTP 405 (`Invalid payload`)
+even with the documented `fabricName` parameter and session. The two PUTs,
+`PUT /external-api/v1/usermgmt/users/credentials` and
+`PUT /external-api/v1/inventory/chassis/credentials`, change passwords and are
+intentionally not exposed through MCP.
 
 ## Live verification
 
-At the time of onboarding:
+After migration to the official API:
 
-- Login succeeded; the account has `allFabrics: true`.
-- 12 fabrics, 26 switches, 556 hosts, 29 storages, 1621 host ports, and 436
-  storage ports were returned.
-- 2394 zones and 1921 host-to-storage connections were derived.
+- `GET /external-api/v1/about/` reports version `3.0.0.1`, build 11.
+- Basic-auth probes succeeded for fabrics, switches, and both device-port
+  collections; the same calls returned HTTP 401 with the legacy UI session.
+- 12 fabrics, 38 switches, 1647 host ports, and 436 storage ports were returned.
+- 1024 hosts and 50 storages were derived from device-port names.
+- 2394 zones and 1917 host-to-storage connections were derived.
 
 ## Validation
 
